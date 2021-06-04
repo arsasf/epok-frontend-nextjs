@@ -2,10 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Cookie from "js-cookie";
 import Layout from "../../../components/Layout";
-import styles from "../../../styles/SignIn.module.css";
+import styles from "../../../styles/Pin.module.css";
 import { unauthPage } from "../../../middleware/authorizationPage";
-// import img1 from "../../../public/linier_gradient.png";
-// const Image = require("next-images");
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,9 +12,13 @@ export async function getServerSideProps(context) {
   return { props: {} };
 }
 
-export default function SignIn() {
+export default function Pin() {
   const router = useRouter();
-  const [form, setForm] = useState({ userEmail: "", userPassword: "" });
+  const [form, setForm] = useState({
+    userName: "",
+    userEmail: "",
+    userPassword: "",
+  });
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -30,7 +32,7 @@ export default function SignIn() {
   };
 
   return (
-    <Layout title="SignIn">
+    <Layout title="Pin">
       <div className={`${styles.containerFluid} container-fluid`}>
         <div className="row">
           <div className={`col-lg-7 ${styles.colLeft}`}>
@@ -68,63 +70,62 @@ export default function SignIn() {
           </div>
           <div className={`${styles.colRight} col-lg-4`}>
             <h1 className={styles.textRight1}>
-              Start Accessing Banking Needs With All Devices and All Platforms
-              With 30.000+ Users
+              Secure Your Account, Your Wallet, and Your Data With 6 Digits PIN
+              That You Created Yourself.
             </h1>
             <h1 className={styles.textRight2}>
-              Transfering money is eassier than ever, you can access Zwallet
-              wherever you are. Desktop, laptop, mobile phone? we cover all of
-              that for you!
+              Create 6 digits pin to secure all your money and your data in
+              Zwallet app. Keep it secret and don’t tell anyone about your
+              Zwallet account password and the PIN.
             </h1>
             <form className={`card ${styles.form} `} onSubmit={handleLogin}>
-              <div className="mb-5">
-                <div className="input-group">
-                  <div className={styles.iconForm}>
-                    <Image src="/mail.png" width="24px" height="24px" />
-                  </div>
+              <div className={styles.colPin}>
+                <div className="mb-5">
                   <input
-                    type="email"
-                    placeholder="Enter your e-mail"
+                    type="text"
                     className={`${styles.placeholder} form-control`}
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
                     required
                   />
                 </div>
-              </div>
-              <div className="mb-3">
-                <div className="input-group">
-                  <div className={styles.iconForm}>
-                    <Image src="/lock.png" width="24px" height="24px" />
-                  </div>
+                <div className="mb-5">
                   <input
-                    type="password"
-                    placeholder="Enter your password"
+                    type="text"
                     className={`${styles.placeholder} form-control`}
-                    id="exampleInputPassword1"
                     required
                   />
                 </div>
-                <Link href="#">
-                  <div
-                    id="emailHelp"
-                    className={`${styles.textForgot} form-text`}
-                  >
-                    Forgot Password ?
-                  </div>
-                </Link>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className={`${styles.placeholder} form-control`}
+                    required
+                  />
+                </div>
+                <div className="mb-5">
+                  <input
+                    type="text"
+                    className={`${styles.placeholder} form-control`}
+                    required
+                  />
+                </div>
+                <div className="mb-5">
+                  <input
+                    type="text"
+                    className={`${styles.placeholder} form-control`}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className={`${styles.placeholder} form-control`}
+                    required
+                  />
+                </div>
               </div>
               <button type="submit" className={`${styles.buttonForm} btn `}>
-                Login
+                Confirm
               </button>
-              <div className={styles.boxSignUp}>
-                <h1 className={styles.textRight3}>
-                  Don’t have an account? Let’s
-                </h1>
-                <Link href="/signup">
-                  <h1 className={styles.textRight4}>Sign Up</h1>
-                </Link>
-              </div>
             </form>
           </div>
           <div className={`${styles.colSpace} col-lg-1`}>ini left col 1</div>

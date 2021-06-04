@@ -2,10 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Cookie from "js-cookie";
 import Layout from "../../../components/Layout";
-import styles from "../../../styles/SignIn.module.css";
+import styles from "../../../styles/SignUp.module.css";
 import { unauthPage } from "../../../middleware/authorizationPage";
-// import img1 from "../../../public/linier_gradient.png";
-// const Image = require("next-images");
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,9 +12,13 @@ export async function getServerSideProps(context) {
   return { props: {} };
 }
 
-export default function SignIn() {
+export default function SignUp() {
   const router = useRouter();
-  const [form, setForm] = useState({ userEmail: "", userPassword: "" });
+  const [form, setForm] = useState({
+    userName: "",
+    userEmail: "",
+    userPassword: "",
+  });
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -30,7 +32,7 @@ export default function SignIn() {
   };
 
   return (
-    <Layout title="SignIn">
+    <Layout title="SignUp">
       <div className={`${styles.containerFluid} container-fluid`}>
         <div className="row">
           <div className={`col-lg-7 ${styles.colLeft}`}>
@@ -80,6 +82,21 @@ export default function SignIn() {
               <div className="mb-5">
                 <div className="input-group">
                   <div className={styles.iconForm}>
+                    <Image src="/person.png" width="24px" height="24px" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Enter your username"
+                    className={`${styles.placeholder} form-control`}
+                    id="exampleInputNamel1"
+                    aria-describedby="emailHelp"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mb-5">
+                <div className="input-group">
+                  <div className={styles.iconForm}>
                     <Image src="/mail.png" width="24px" height="24px" />
                   </div>
                   <input
@@ -105,24 +122,16 @@ export default function SignIn() {
                     required
                   />
                 </div>
-                <Link href="#">
-                  <div
-                    id="emailHelp"
-                    className={`${styles.textForgot} form-text`}
-                  >
-                    Forgot Password ?
-                  </div>
-                </Link>
               </div>
               <button type="submit" className={`${styles.buttonForm} btn `}>
-                Login
+                Sign Up
               </button>
               <div className={styles.boxSignUp}>
                 <h1 className={styles.textRight3}>
-                  Don’t have an account? Let’s
+                  Already have an account? Let’s
                 </h1>
-                <Link href="/signup">
-                  <h1 className={styles.textRight4}>Sign Up</h1>
+                <Link href="/signin">
+                  <h1 className={styles.textRight4}>Login</h1>
                 </Link>
               </div>
             </form>
