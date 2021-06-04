@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap");
+
+.containerFluid {
+  background-color: brown;
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.container {
+  background-color: yellowgreen;
+}
+
+.colLeft {
+  background-color: #6379f4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 0;
+  height: max-content;
+}
+
+.colRight {
+  background-color: darkblue;
+}
+
+.colSpace {
+  background-color: chocolate;
+}
+
+.epok {
+  font-size: 29px;
+  width: 70%;
+  font-weight: 700;
+  text-align: left;
+  color: white;
+  margin-top: 50px;
+}
+.boxImagePhone {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  right: -75px;
+  top: 150px;
+  bottom: 200px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+}
+
+.boxImagePhone1 {
+  width: 100%;
+  position: absolute;
+  left: -75px;
+  bottom: 200px;
+  top: 150px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+.imgLine Image:first-child {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: max-content;
+  mix-blend-mode: soft-light;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.2) 0% rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.imgLine {
+  padding: 20px 0 0px 0;
+}
+
+.textLeft2 {
+  position: absolute;
+  bottom: 0;
+  margin: auto;
+  width: 70%;
+  font-size: 16px;
+  font-weight: 400;
+  color: white;
+  text-align: justify;
+  margin-bottom: 80px;
+}
+
+.textLeft1 {
+  position: absolute;
+  bottom: 20%;
+  margin: auto;
+  width: 70%;
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  text-align: left;
+  margin-top: 20px;
+}
