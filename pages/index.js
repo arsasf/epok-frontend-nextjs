@@ -51,8 +51,7 @@ import { authPage } from "../middleware/authorizationPage";
 
 export async function getServerSideProps(context) {
   const data = await authPage(context);
-  // console.log(data);
-
+  console.log(data);
   const res = await axiosApiIntances
     .get("users")
     .then((res) => {
@@ -69,7 +68,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home(props) {
-  // console.log(props);
+  console.log(props);
   const [users, setUsers] = useState(props.users);
   return (
     <Layout title="Home">

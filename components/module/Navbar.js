@@ -8,7 +8,7 @@ export default function Navbar() {
   const handleLogout = () => {
     Cookie.remove("token");
     Cookie.remove("user");
-    router.push("/login");
+    router.push("/signin");
   };
 
   return (

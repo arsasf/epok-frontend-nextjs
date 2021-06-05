@@ -216,6 +216,29 @@
   cursor: pointer;
 }
 
+.modalFooter {
+  background-color: #3a3d42;
+  color: white;
+  width: 100px;
+  border: 0;
+}
+
+.modalBody {
+  text-align: justify;
+}
+
+.modalFooter:hover {
+  background-color: #6379f4;
+  color: white;
+}
+
+.modalHeader {
+  padding: 9px 15px;
+  background-color: #3a3d42;
+  color: white;
+  border: 0;
+}
+
 @media (max-width: 791.98px) {
   .boxImagePhone {
     width: 50%;

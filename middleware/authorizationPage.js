@@ -11,7 +11,7 @@ export function unauthPage(context) {
         .end();
     }
 
-    return resolve("unauthorized");
+    return resolve("unauthorization");
   });
 }
 
@@ -21,7 +21,7 @@ export function authPage(context) {
     if (!allCookies.token) {
       return context.res
         .writeHead(302, {
-          Location: "/Login",
+          Location: "/signin",
         })
         .end();
     }
