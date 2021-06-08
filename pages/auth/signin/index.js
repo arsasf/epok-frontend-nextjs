@@ -15,14 +15,15 @@ export async function getServerSideProps(context) {
   return { props: {} };
 }
 
-export default function SignIn(props) {
+export default function SignIn() {
   const router = useRouter();
   const [modal, setModal] = useState(false);
   const [msg, setMsg] = useState(false);
   const [info, setInfo] = useState("");
   const [form, setForm] = useState({ userEmail: "", userPassword: "" });
 
-  const toggle = () => {
+  const toggle = (event) => {
+    event.preventDefault();
     if (info === "ERROR LOGIN") {
       router.push("/signin");
       setModal(!modal);

@@ -31,7 +31,8 @@ export default function Pin(props) {
   });
   const [form, setForm] = useState({});
 
-  const toggle = () => {
+  const toggle = (event) => {
+    event.preventDefault();
     if (info === "ERROR UPDATE PIN") {
       router.push("/signin");
       setModal(!modal);

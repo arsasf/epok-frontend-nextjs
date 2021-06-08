@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap");
+
+.fullArea {
+  padding-top: 90px;
+  font-family: "Nunito Sans", sans-serif;
+  padding-bottom: 60px;
+}
+.container {
+  margin-top: 50px;
+  height: auto;
+}
+.left {
+  background-color: white;
+  padding: 0;
+}
+.right {
+  padding: 0;
+}
+
+.boxRight {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 25px;
+}
+.profile {
+  width: 500px;
+  display: flex;
+  height: 600px;
+  justify-content: space-evenly;
+  flex-direction: column;
+  align-items: center;
+}
+.imgProfile {
+  border-radius: 10px;
+}
+.boxEdit {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  color: #7a7886;
+}
+.boxEdit:hover {
+  background-color: #6379f4;
+  cursor: pointer;
+  border-radius: 8px;
+  color: white;
+}
+.imgEdit {
+  margin-right: 20px;
+}
+.textEdit {
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+.boxName {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.nameProfile {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4d4b57;
+}
+.phoneProfile {
+  font-size: 16px;
+  font-weight: 400;
+  color: #7a7886;
+}
+
+.boxButton {
+  width: 100%;
+  display: flex;
+  background-color: #e5e8ed;
+  color: #4d4b57;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  height: 60px;
+  font-weight: 700;
+  border: 0;
+}
+
+.boxButton:hover,
+.boxButton:focus,
+.boxButton:active {
+  background-color: #6379f4;
+  box-shadow: #6379f4;
+  outline: #6379f4;
+  font-weight: 500;
+}
+
+.textButton {
+  font-size: 16px;
+  margin-bottom: 0;
+}

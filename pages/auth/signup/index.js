@@ -25,7 +25,8 @@ export default function SignUp() {
     userPassword: "",
   });
 
-  const toggle = () => {
+  const toggle = (event) => {
+    event.preventDefault();
     if (info === "ERROR REGISTER") {
       router.push("/signup");
       setModal(!modal);
