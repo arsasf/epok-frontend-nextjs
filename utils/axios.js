@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookie from "js-cookie";
 
 const axiosApiIntances = axios.create({
-  baseURL: "http://Localhost:3004/backend4/api/v1/",
+  baseURL: `${process.env.BASE_URL}`,
 });
 
 if (Cookie.get("token")) {
