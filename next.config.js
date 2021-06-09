@@ -3,6 +3,9 @@ module.exports = {
     APP_NAME: "Z-Wallet",
     BASE_URL: "http://localhost:3004/backend4/api/v1/",
   },
+  images: {
+    domains: ["http://localhost:3004/backend4/api/"],
+  },
   async rewrites() {
     return [
       {

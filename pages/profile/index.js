@@ -1,15 +1,59 @@
 import Layout from "../../components/Layout";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/module/Navbar";
 import Footer from "../../components/module/Footer";
 import Menu from "../../components/module/Menu";
 import { Col, Container, Row, Button } from "reactstrap";
 import Image from "next/image";
 import styles from "../../styles/Profile.module.css";
+import { authPage } from "../../middleware/authorizationPage";
+import axiosApiIntances from "../../utils/axios";
+import { images } from "../../next.config";
+import { useRouter } from "next/router";
 
-export default function Profile() {
+export async function getServerSideProps(context) {
+  const data = await authPage(context);
+
+  const result = await axiosApiIntances
+    .get(`/user/${data.user}`, {
+      headers: {
+        Authorization: `Bearer ${data.token || ""}`,
+      },
+    })
+    .then((res) => {
+      return res.data.data[0];
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return {
+    props: { data: result, userLogin: data },
+  };
+}
+
+export default function Profile(props) {
+  const router = useRouter();
+  const [user, setUser] = useState(props.data);
+
+  const handlePersonlInfo = (event) => {
+    event.preventDefault();
+    router.push("/settings/personalinfo");
+  };
+
+  const handleChangePassword = (event) => {
+    event.preventDefault();
+    router.push("/settings/changepassword");
+  };
+
+  const handleChangePin = (event) => {
+    event.preventDefault();
+    router.push("/settings/changepin");
+  };
+
   return (
     <Layout title="Profile">
-      <Navbar />
+      <Navbar data={user} />
+      {/* {console.log(user)} */}
       <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
           <Row>
@@ -21,12 +65,21 @@ export default function Profile() {
                 <div className={styles.profile}>
                   <div>
                     <div className={styles.imgMenu}>
-                      <Image
-                        src="/img/img-not-found.png"
-                        width="80px"
-                        height="80px"
-                        className={styles.imgProfile}
-                      />
+                      {user.user_image === "" ? (
+                        <Image
+                          src="/img/img-not-found.png"
+                          width="80px"
+                          height="80px"
+                          className={styles.imgProfile}
+                        />
+                      ) : (
+                        <img
+                          src={`${images.domains}${user.user_image}`}
+                          width="80px"
+                          height="80px"
+                          className={styles.imgProfile}
+                        />
+                      )}
                     </div>
                     <div className={styles.boxEdit}>
                       <div className={styles.divEdit}>
@@ -41,10 +94,15 @@ export default function Profile() {
                     </div>
                   </div>
                   <div className={styles.boxName}>
-                    <h3 className={styles.nameProfie}>Name Profile User</h3>
-                    <h3 className={styles.phoneProfile}>+62 813-9387-7946</h3>
+                    <h3 className={styles.nameProfie}>{user.user_name}</h3>
+                    <h3 className={styles.phoneProfile}>
+                      {user.user_phone_number}
+                    </h3>
                   </div>
-                  <Button className={styles.boxButton}>
+                  <Button
+                    className={styles.boxButton}
+                    onClick={handlePersonlInfo}
+                  >
                     <h4 className={styles.textButton}>Personal Information</h4>
                     <div className={styles.divEdit}>
                       <Image
@@ -55,7 +113,10 @@ export default function Profile() {
                       />
                     </div>
                   </Button>
-                  <Button className={styles.boxButton}>
+                  <Button
+                    className={styles.boxButton}
+                    onClick={handleChangePassword}
+                  >
                     <h4 className={styles.textButton}>Change Password</h4>
                     <div className={styles.divEdit}>
                       <Image
@@ -66,7 +127,10 @@ export default function Profile() {
                       />
                     </div>
                   </Button>
-                  <Button className={styles.boxButton}>
+                  <Button
+                    className={styles.boxButton}
+                    onClick={handleChangePin}
+                  >
                     <h4 className={styles.textButton}>Change PIN</h4>
                     <div className={styles.divEdit}>
                       <Image

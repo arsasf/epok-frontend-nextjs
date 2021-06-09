@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Layout from "../../../components/Layout";
 import Navbar from "../../../components/module/Navbar";
 import Footer from "../../../components/module/Footer";
@@ -15,17 +14,82 @@ import {
 } from "reactstrap";
 import Image from "next/image";
 import styles from "../../../styles/Confirmation.module.css";
+import { authPage } from "../../../middleware/authorizationPage";
+import axiosApiIntances from "../../../utils/axios";
+import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
+import cookies from "next-cookies";
+import { images } from "../../../next.config";
 
-export default function Profile() {
+export async function getServerSideProps(context) {
+  const data = await authPage(context);
+  const allCookies = cookies(context);
+  console.log(allCookies);
+  const result = await axiosApiIntances
+    .get(`/user/${data.user}`, {
+      headers: {
+        Authorization: `Bearer ${data.token || ""}`,
+      },
+    })
+    .then((res) => {
+      // console.log(res.data);
+      return res.data.data[0];
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return {
+    props: {
+      data: result,
+      userLogin: data,
+      transfer: allCookies,
+      receiver: allCookies.receiverId,
+    },
+  };
+}
+
+export default function Profile(props) {
+  const router = useRouter();
+  const [user, setUser] = useState(props.data);
   const [modal, setModal] = useState(false);
+  const [receiver, setReceiver] = useState(props.receiver);
   const [msg, setMsg] = useState(false);
   const toggle = (event) => {
     event.preventDefault();
     setModal(!modal);
   };
+
+  console.log(props);
+
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, "0");
+  let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  let yyyy = today.getFullYear();
+  today = mm + "/" + dd + "/" + yyyy;
+
+  useEffect(() => {
+    console.log("Get Data !");
+    getUser();
+  }, []);
+
+  console.log(props.idReceiver);
+  const getUser = () => {
+    axiosApiIntances
+      .get(`user/${props.transfer.receiverId}`)
+      .then((res) => {
+        // console.log(res.data);
+        setReceiver(res.data.data[0]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Layout title="Confirmation">
-      <Navbar />
+      <Navbar data={user} />
+      {console.log(today)}
+      {console.log(receiver)}
       <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
           <Row>
@@ -151,9 +215,11 @@ export default function Profile() {
                         />
                       </div>
                       <div className={styles.textProfile}>
-                        <h4 className={styles.textBox2Right3}>Samuel Suhi</h4>
+                        <h4 className={styles.textBox2Right3}>
+                          {receiver.user_name}
+                        </h4>
                         <h4 className={styles.textBox2Right4}>
-                          +62 813-8492-9994
+                          {receiver.user_phone_number}
                         </h4>
                       </div>
                     </div>
@@ -165,7 +231,9 @@ export default function Profile() {
                     <div className={`${styles.boxButton} shadow sm`}>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>Amount</h4>
-                        <h4 className={styles.textBox2Right4}>Rp100.000</h4>
+                        <h4 className={styles.textBox2Right4}>
+                          Rp{props.transfer.amount}
+                        </h4>
                       </div>
                     </div>
                   </div>
@@ -173,7 +241,9 @@ export default function Profile() {
                     <div className={`${styles.boxButton} shadow sm`}>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>Balance Left</h4>
-                        <h4 className={styles.textBox2Right4}>Rp20.000</h4>
+                        <h4 className={styles.textBox2Right4}>
+                          Rp{props.transfer.balance}
+                        </h4>
                       </div>
                     </div>
                   </div>
@@ -181,9 +251,7 @@ export default function Profile() {
                     <div className={`${styles.boxButton} shadow sm`}>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>Date & Time</h4>
-                        <h4 className={styles.textBox2Right4}>
-                          May 11, 2020 - 12.20
-                        </h4>
+                        <h4 className={styles.textBox2Right4}>{today}</h4>
                       </div>
                     </div>
                   </div>
@@ -192,7 +260,7 @@ export default function Profile() {
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>Notes</h4>
                         <h4 className={styles.textBox2Right4}>
-                          For buying some socks
+                          {props.transfer.note}
                         </h4>
                       </div>
                     </div>
@@ -202,6 +270,7 @@ export default function Profile() {
                       <button
                         type="submit"
                         className={`${styles.buttonForm} btn`}
+                        onClick={toggle}
                       >
                         Continue
                       </button>

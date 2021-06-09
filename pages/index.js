@@ -1,47 +1,3 @@
-// import { useEffect, useState } from "react";
-// import axiosApiIntances from "../utils/axios";
-// import Layout from "../components/Layout";
-// import Navbar from "../components/module/Navbar";
-// import styles from "../styles/Home.module.css";
-
-// export default function Home() {
-//   const [users, setUsers] = useState([]);
-
-//   useEffect(() => {
-//     console.log("Get Data");
-//     getUsers();
-//   }, []);
-
-//   const getUsers = () => {
-//     axiosApiIntances
-//       .get("users")
-//       .then((res) => {
-//         setUsers(res.data);
-//         console.log(res);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//       });
-//   };
-
-//   return (
-//     <Layout title="Home">
-//       <Navbar />
-//       <h1 className={styles.titleHead}>Home Page !</h1>
-//       <h2>{process.env.APP_NAME}</h2>
-//       {users.map((item, index) => (
-//         <div className="d-grid gap-2" key={index}>
-//           <button className="btn btn-primary" type="button">
-//             {item.name}
-//           </button>
-//         </div>
-//       ))}
-//     </Layout>
-//   );
-// }
-
-// ==========================================
-
 import { useState } from "react";
 import axiosApiIntances from "../utils/axios";
 import Layout from "../components/Layout";
@@ -55,28 +11,46 @@ import Image from "next/image";
 
 export async function getServerSideProps(context) {
   const data = await authPage(context);
-  console.log(data);
-  const res = await axiosApiIntances
-    .get("users")
+
+  const result = await axiosApiIntances
+    .get(`/user/${data.user}`, {
+      headers: {
+        Authorization: `Bearer ${data.token || ""}`,
+      },
+    })
     .then((res) => {
       // console.log(res.data);
-      return res.data;
+      return res.data.data[0];
     })
     .catch((err) => {
-      // console.log(err);
-      return [];
+      console.log(err);
+    });
+
+  const resBalance = await axiosApiIntances
+    .get(`/balance/${data.user}`, {
+      headers: {
+        Authorization: `Bearer ${data.token || ""}`,
+      },
+    })
+    .then((res) => {
+      // console.log(res.data);
+      return res.data.data[0];
+    })
+    .catch((err) => {
+      console.log(err);
     });
   return {
-    props: { users: res, userLogin: data }, // will be passed to the page component as props
+    props: { data: result, userLogin: data, balance: resBalance },
   };
 }
 
 export default function Home(props) {
   console.log(props);
-  const [users, setUsers] = useState(props.users);
+  const [user, setUser] = useState(props.data);
+
   return (
     <Layout title="Home">
-      <Navbar />
+      <Navbar data={user} />
       <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
           <Row>
@@ -88,8 +62,8 @@ export default function Home(props) {
                 <div className={styles.box1}>
                   <div className={styles.textBox1Left}>
                     <h4 className={styles.balance}>Balance</h4>
-                    <h4 className={styles.saldo}>Rp120.000</h4>
-                    <h4 className={styles.phone}>+62 813-9387-7946</h4>
+                    <h4 className={styles.saldo}>Rp{props.balance.balance}</h4>
+                    <h4 className={styles.phone}>{user.user_phone_number}</h4>
                   </div>
                   <div className={styles.box1Button}>
                     <Button className={styles.boxButton}>
