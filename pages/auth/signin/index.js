@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Cookie from "js-cookie";
-import Layout from "../../../components/Layout";
-import styles from "../../../styles/SignIn.module.css";
-import { unauthPage } from "../../../middleware/authorizationPage";
-import axiosApiIntances from "../../../utils/axios";
+import Layout from "components/Layout";
+import styles from "styles/SignIn.module.css";
+import { unauthPage } from "middleware/authorizationPage";
+import axiosApiIntances from "utils/axios";
 import Image from "next/image";
 import Link from "next/link";
 

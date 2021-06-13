@@ -20,7 +20,9 @@ export default function SignUp() {
   const [msg, setMsg] = useState(false);
   const [info, setInfo] = useState("");
   const [form, setForm] = useState({
-    userName: "",
+    userFirstName: "",
+    userLastName: "",
+    userPhone: "",
     userEmail: "",
     userPassword: "",
   });
@@ -118,12 +120,46 @@ export default function SignUp() {
                   </div>
                   <input
                     type="text"
-                    placeholder="Enter your username"
+                    placeholder="Enter your firstname"
                     className={`${styles.placeholder} form-control`}
-                    id="exampleInputNamel1"
-                    aria-describedby="emailHelp"
-                    name="userName"
-                    value={form.userName}
+                    name="userFirstName"
+                    value={form.userFirstName}
+                    onChange={(event) => changeText(event)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mb-5">
+                <div className="input-group">
+                  <div className={styles.iconForm}>
+                    <Image src="/img/person.png" width="24px" height="24px" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Enter your lastname"
+                    className={`${styles.placeholder} form-control`}
+                    name="userLastName"
+                    value={form.userLastName}
+                    onChange={(event) => changeText(event)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mb-5">
+                <div className="input-group">
+                  <div className={styles.iconForm}>
+                    <Image
+                      src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuY29tL3N2Z2pzIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeD0iMCIgeT0iMCIgdmlld0JveD0iMCAwIDUxMy42NCA1MTMuNjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMiA1MTIiIHhtbDpzcGFjZT0icHJlc2VydmUiIGNsYXNzPSIiPjxnPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgoJPGc+CgkJPHBhdGggZD0iTTQ5OS42NiwzNzYuOTZsLTcxLjY4LTcxLjY4Yy0yNS42LTI1LjYtNjkuMTItMTUuMzU5LTc5LjM2LDE3LjkyYy03LjY4LDIzLjA0MS0zMy4yOCwzNS44NDEtNTYuMzIsMzAuNzIgICAgYy01MS4yLTEyLjgtMTIwLjMyLTc5LjM2LTEzMy4xMi0xMzMuMTJjLTcuNjgtMjMuMDQxLDcuNjgtNDguNjQxLDMwLjcyLTU2LjMyYzMzLjI4LTEwLjI0LDQzLjUyLTUzLjc2LDE3LjkyLTc5LjM2bC03MS42OC03MS42OCAgICBjLTIwLjQ4LTE3LjkyLTUxLjItMTcuOTItNjkuMTIsMGwtNDguNjQsNDguNjRjLTQ4LjY0LDUxLjIsNS4xMiwxODYuODgsMTI1LjQ0LDMwNy4yYzEyMC4zMiwxMjAuMzIsMjU2LDE3Ni42NDEsMzA3LjIsMTI1LjQ0ICAgIGw0OC42NC00OC42NEM1MTcuNTgxLDQyNS42LDUxNy41ODEsMzk0Ljg4LDQ5OS42NiwzNzYuOTZ6IiBmaWxsPSIjYTlhOWE5OTkiIGRhdGEtb3JpZ2luYWw9IiMwMDAwMDAiIHN0eWxlPSIiIGNsYXNzPSIiPjwvcGF0aD4KCTwvZz4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8L2c+CjxnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwvZz4KPGcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9nPgo8L2c+PC9zdmc+"
+                      width="24px"
+                      height="24px"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Enter your phone number"
+                    className={`${styles.placeholder} form-control`}
+                    name="userPhone"
+                    value={form.userPhone}
                     onChange={(event) => changeText(event)}
                     required
                   />
@@ -138,8 +174,6 @@ export default function SignUp() {
                     type="email"
                     placeholder="Enter your e-mail"
                     className={`${styles.placeholder} form-control`}
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
                     name="userEmail"
                     value={form.userEmail}
                     onChange={(event) => changeText(event)}
@@ -156,7 +190,6 @@ export default function SignUp() {
                     type="password"
                     placeholder="Enter your password"
                     className={`${styles.placeholder} form-control`}
-                    id="exampleInputPassword1"
                     name="userPassword"
                     value={form.userPassword}
                     onChange={(event) => changeText(event)}

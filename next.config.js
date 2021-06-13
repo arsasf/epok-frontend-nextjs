@@ -24,6 +24,10 @@ module.exports = {
         source: "/pin", // source = pengganti path
         destination: "/auth/pin", // destination = lokai path
       },
+      {
+        source: "/verify", // source = pengganti path
+        destination: "/auth/verify", // destination = lokai path
+      },
     ];
   },
 };
