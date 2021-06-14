@@ -38,7 +38,9 @@ export default function Navbar(props) {
                   )}
                 </div>
                 <div className={styles.rowUser}>
-                  <h1 className={styles.nameUser}>{props.data.user_name}</h1>
+                  <h1 className={styles.nameUser}>
+                    {props.data.user_first_name} {props.data.user_last_name}
+                  </h1>
                   <h1 className={styles.phoneUser}>
                     {props.data.user_phone_number}
                   </h1>

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import Cookie from "js-cookie";
 import styles from "../../styles/Menu.module.css";
 import Image from "next/image";
-import { Button } from "reactstrap";
+import { Button, Container } from "reactstrap";
 
 export default function Menu() {
   const router = useRouter();

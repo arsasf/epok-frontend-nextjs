@@ -182,3 +182,16 @@
   font-weight: 700;
   color: #ff5b37;
 }
+
+@media (max-width: 1200px) {
+  .left {
+    width: 0%;
+  }
+  .right {
+    height: 100%;
+    width: 100%;
+    right: 0;
+    left: 0;
+    position: relative;
+  }
+}

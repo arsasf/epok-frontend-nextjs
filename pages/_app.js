@@ -1,5 +1,5 @@
 import Head from "next/head";
-import "../styles/globals.css";
+// import "../styles/globals.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { Provider } from "react-redux";
 import { useStore } from "redux/store";

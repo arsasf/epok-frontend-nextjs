@@ -53,3 +53,48 @@
   flex-direction: column;
   justify-content: space-between;
 }
+
+@media (max-width: 1200px) {
+  .boxMenuLeft {
+    flex-direction: row;
+    width: 100%;
+    height: max-content;
+    padding: 20px 100px 20px 100px;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    z-index: 10;
+    margin-bottom: 0;
+    border-radius: 0;
+  }
+  .listMenuTop {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+    height: 100%;
+  }
+  .listMenuBottom {
+    height: 100%;
+    width: 20%;
+    flex-direction: row;
+  }
+  .textMenu {
+    display: none;
+  }
+
+  .rowMenu {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+  }
+
+  .imgMenu {
+    margin-right: 0;
+  }
+}

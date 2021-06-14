@@ -51,12 +51,14 @@
   color: white;
 }
 
-@media (max-width: 791.98px) {
+@media (max-width: 1200px) {
   .rowUser {
     flex-direction: column;
     width: 200px;
+    padding-bottom: 80px;
   }
   .phoneUser {
+    padding-top: 10px;
     text-align: right;
   }
 }
