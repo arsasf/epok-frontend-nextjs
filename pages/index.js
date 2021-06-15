@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Cookie from "js-cookie";
 import axiosApiIntances from "../utils/axios";
 import Layout from "../components/Layout";
 import Navbar from "../components/module/Navbar";
@@ -8,9 +9,11 @@ import styles from "../styles/Home.module.css";
 import { authPage } from "../middleware/authorizationPage";
 import { Col, Container, Row, Button } from "reactstrap";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
-  const data = await authPage(context);
+  let data = await authPage(context);
+  console.log(data);
 
   const result = await axiosApiIntances
     .get(`/user/${data.user}`, {
@@ -24,6 +27,12 @@ export async function getServerSideProps(context) {
     })
     .catch((err) => {
       console.log(err);
+      if (err.response.status === 403) {
+        Cookie.remove("token");
+        Cookie.remove("user");
+        // useRouter().push("/signin");
+        return {};
+      }
     });
 
   const resBalance = await axiosApiIntances
@@ -37,7 +46,12 @@ export async function getServerSideProps(context) {
       return res.data.data[0];
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err.response.status);
+      if (err.response.status === 403) {
+        Cookie.remove("token");
+        Cookie.remove("user");
+        return {};
+      }
     });
   return {
     props: { data: result, userLogin: data, balance: resBalance },
@@ -47,6 +61,7 @@ export async function getServerSideProps(context) {
 export default function Home(props) {
   console.log(props);
   const [user, setUser] = useState(props.data);
+  const router = useRouter();
 
   return (
     <Layout title="Home">

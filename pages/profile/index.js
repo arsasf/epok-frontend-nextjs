@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const data = await authPage(context);
+  console.log(data);
 
   const result = await axiosApiIntances
     .get(`/user/${data.user}`, {
@@ -22,6 +23,7 @@ export async function getServerSideProps(context) {
       },
     })
     .then((res) => {
+      console.log(res.config);
       return res.data.data[0];
     })
     .catch((err) => {
@@ -33,18 +35,23 @@ export async function getServerSideProps(context) {
 }
 
 export default function Profile(props) {
+  // console.log(props);
   const router = useRouter();
   const [user, setUser] = useState(props.data);
   const [msg, setMsg] = useState("");
   const [show, setShow] = useState(false);
   const [info, setInfo] = useState("");
+  const [choose, setChoose] = useState(false);
   const [form, setForm] = useState({
     userImage: `${images.domains}${props.data.user_image}`,
     image: props.data.user_image,
   });
 
   const handleClose = () => {
-    if (info === "ERROR : UPDATE IMAGE PROFILE") {
+    if (
+      info === "ERROR : UPDATE IMAGE PROFILE" ||
+      info === "ERROR : DELETE IMAGE PROFILE"
+    ) {
       router.push("/profile");
       setShow(false);
     } else {
@@ -62,6 +69,7 @@ export default function Profile(props) {
   };
 
   const handleImage = (event) => {
+    // console.log(props);
     setForm({
       userImage: URL.createObjectURL(event.target.files[0]),
       image: event.target.files[0],
@@ -72,26 +80,22 @@ export default function Profile(props) {
     formData.append("image", event.target.files[0]);
 
     //* ==================== Check Form Data ===================== */
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
+    // for (var pair of formData.entries()) {
+    //   console.log(pair[0] + ", " + pair[1]);
+    // }
     //* ======================== End ============================== */
 
     axiosApiIntances
-      .patch(`user/update/profile/user/image/${id}`, formData)
+      .patch(`user/update/profile/user/image/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${props.userLogin.token || ""}`,
+        },
+      })
       .then((result) => {
         console.log(result);
         setShow(true);
         setInfo("UPDATE PROFILE IMAGE");
         setMsg(result.data.msg);
-        axiosApiIntances
-          .get(`/user/${props.data.user_id}`)
-          .then((res) => {
-            return res.data.data[0];
-          })
-          .catch((err) => {
-            console.log(err);
-          });
       })
       .catch((err) => {
         console.log(err);
@@ -117,6 +121,44 @@ export default function Profile(props) {
     router.push("/settings/changepin");
   };
 
+  const handleChoose = () => {
+    setShow(true);
+    setChoose(true);
+    setInfo("DELETE IMAGE PROFILE");
+    setMsg("Are you sure to delete image?");
+  };
+
+  const handleDelete = () => {
+    console.log("ini delete");
+    const id = props.data.user_id;
+    axiosApiIntances
+      .patch(`user/delete/profile/user/image-profile/${id}`, {
+        headers: {
+          Authorization: `Bearer ${props.userLogin.token || ""}`,
+        },
+      })
+      .then((result) => {
+        console.log(result);
+        setShow(true);
+        setInfo("DELETE PROFILE IMAGE");
+        setMsg(result.data.msg);
+        setChoose(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setShow(true);
+        setInfo("ERROR : DELETE IMAGE PROFILE");
+        setMsg(err.response.data.msg);
+        resetImage();
+        router.push("/profile");
+      });
+  };
+
+  const handleCancel = () => {
+    setShow(false);
+    router.push("/profile");
+  };
+
   return (
     <Layout title="Profile">
       <Navbar data={user} />
@@ -130,15 +172,34 @@ export default function Profile(props) {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body className={styles.modalBody}>{msg}</Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="fff"
-                className={styles.modalFooter}
-                onClick={handleClose}
-              >
-                Close
-              </Button>
-            </Modal.Footer>
+            {choose === true ? (
+              <Modal.Footer>
+                <Button
+                  variant="fff"
+                  className={styles.modalFooter1}
+                  onClick={handleDelete}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="fff"
+                  className={styles.modalFooter2}
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+              </Modal.Footer>
+            ) : (
+              <Modal.Footer>
+                <Button
+                  variant="fff"
+                  className={styles.modalFooter}
+                  onClick={handleClose}
+                >
+                  Close
+                </Button>
+              </Modal.Footer>
+            )}
           </Modal>
           <Row>
             <Col lg={3} className={styles.left}>
@@ -180,7 +241,7 @@ export default function Profile(props) {
                       </div>
                     </Form.Group>
 
-                    <div className={styles.boxEdit}>
+                    <div className={styles.boxEdit} onClick={handleChoose}>
                       <div className={styles.divEdit}>
                         <Image
                           src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuY29tL3N2Z2pzIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeD0iMCIgeT0iMCIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMiA1MTIiIHhtbDpzcGFjZT0icHJlc2VydmUiIGNsYXNzPSIiPjxnPjxwYXRoIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZD0ibTE1Ni4zNzEwOTQgMzAuOTA2MjVoODUuNTcwMzEydjE0LjM5ODQzOGgzMC45MDIzNDR2LTE2LjQxNDA2M2MuMDAzOTA2LTE1LjkyOTY4Ny0xMi45NDkyMTktMjguODkwNjI1LTI4Ljg3MTA5NC0yOC44OTA2MjVoLTg5LjYzMjgxMmMtMTUuOTIxODc1IDAtMjguODc1IDEyLjk2MDkzOC0yOC44NzUgMjguODkwNjI1djE2LjQxNDA2M2gzMC45MDYyNXptMCAwIiBmaWxsPSIjN2E3ODg2IiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBzdHlsZT0iIiBjbGFzcz0iIj48L3BhdGg+PHBhdGggeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBkPSJtMzQ0LjIxMDkzOCAxNjcuNzVoLTI5MC4xMDkzNzZjLTcuOTQ5MjE4IDAtMTQuMjA3MDMxIDYuNzgxMjUtMTMuNTY2NDA2IDE0LjcwNzAzMWwyNC4yNTM5MDYgMjk5LjkwNjI1YzEuMzUxNTYzIDE2Ljc0MjE4OCAxNS4zMTY0MDcgMjkuNjM2NzE5IDMyLjA5Mzc1IDI5LjYzNjcxOWgyMDQuNTQyOTY5YzE2Ljc3NzM0NCAwIDMwLjc0MjE4OC0xMi44OTQ1MzEgMzIuMDkzNzUtMjkuNjQwNjI1bDI0LjI1MzkwNy0yOTkuOTAyMzQ0Yy42NDQ1MzEtNy45MjU3ODEtNS42MTMyODItMTQuNzA3MDMxLTEzLjU2MjUtMTQuNzA3MDMxem0tMjE5Ljg2MzI4MiAzMTIuMjYxNzE5Yy0uMzI0MjE4LjAxOTUzMS0uNjQ4NDM3LjAzMTI1LS45Njg3NS4wMzEyNS04LjEwMTU2MiAwLTE0LjkwMjM0NC02LjMwODU5NC0xNS40MDYyNS0xNC41MDM5MDdsLTE1LjE5OTIxOC0yNDYuMjA3MDMxYy0uNTIzNDM4LTguNTE5NTMxIDUuOTU3MDMxLTE1Ljg1MTU2MiAxNC40NzI2NTYtMTYuMzc1IDguNDg4MjgxLS41MTU2MjUgMTUuODUxNTYyIDUuOTQ5MjE5IDE2LjM3NSAxNC40NzI2NTdsMTUuMTk1MzEyIDI0Ni4yMDcwMzFjLjUyNzM0NCA4LjUxOTUzMS01Ljk1MzEyNSAxNS44NDc2NTYtMTQuNDY4NzUgMTYuMzc1em05MC40MzM1OTQtMTUuNDIxODc1YzAgOC41MzEyNS02LjkxNzk2OSAxNS40NDkyMTgtMTUuNDUzMTI1IDE1LjQ0OTIxOHMtMTUuNDUzMTI1LTYuOTE3OTY4LTE1LjQ1MzEyNS0xNS40NDkyMTh2LTI0Ni4yMTA5MzhjMC04LjUzNTE1NiA2LjkxNzk2OS0xNS40NTMxMjUgMTUuNDUzMTI1LTE1LjQ1MzEyNSA4LjUzMTI1IDAgMTUuNDUzMTI1IDYuOTE3OTY5IDE1LjQ1MzEyNSAxNS40NTMxMjV6bTkwLjc1NzgxMi0yNDUuMzAwNzgyLTE0LjUxMTcxOCAyNDYuMjA3MDMyYy0uNDgwNDY5IDguMjEwOTM3LTcuMjkyOTY5IDE0LjU0Mjk2OC0xNS40MTAxNTYgMTQuNTQyOTY4LS4zMDQ2ODggMC0uNjEzMjgyLS4wMDc4MTItLjkyMTg3Ni0uMDIzNDM3LTguNTE5NTMxLS41MDM5MDYtMTUuMDE5NTMxLTcuODE2NDA2LTE0LjUxNTYyNC0xNi4zMzU5MzdsMTQuNTA3ODEyLTI0Ni4yMTA5MzhjLjUtOC41MTk1MzEgNy43ODkwNjItMTUuMDE5NTMxIDE2LjMzMjAzMS0xNC41MTU2MjUgOC41MTk1MzEuNSAxNS4wMTk1MzEgNy44MTY0MDYgMTQuNTE5NTMxIDE2LjMzNTkzN3ptMCAwIiBmaWxsPSIjN2E3ODg2IiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBzdHlsZT0iIiBjbGFzcz0iIj48L3BhdGg+PHBhdGggeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBkPSJtMzk3LjY0ODQzOCAxMjAuMDYyNS0xMC4xNDg0MzgtMzAuNDIxODc1Yy0yLjY3NTc4MS04LjAxOTUzMS0xMC4xODM1OTQtMTMuNDI5Njg3LTE4LjY0MDYyNS0xMy40Mjk2ODdoLTMzOS40MTAxNTZjLTguNDUzMTI1IDAtMTUuOTY0ODQ0IDUuNDEwMTU2LTE4LjYzNjcxOSAxMy40Mjk2ODdsLTEwLjE0ODQzOCAzMC40MjE4NzVjLTEuOTU3MDMxIDUuODY3MTg4LjU4OTg0NCAxMS44NTE1NjIgNS4zNDM3NSAxNC44MzU5MzggMS45Mzc1IDEuMjE0ODQzIDQuMjMwNDY5IDEuOTQ1MzEyIDYuNzUgMS45NDUzMTJoMzcyLjc5Njg3NmMyLjUxOTUzMSAwIDQuODE2NDA2LS43MzA0NjkgNi43NS0xLjk0OTIxOSA0Ljc1MzkwNi0yLjk4NDM3NSA3LjMwMDc4MS04Ljk2ODc1IDUuMzQzNzUtMTQuODMyMDMxem0wIDAiIGZpbGw9IiM3YTc4ODYiIGRhdGEtb3JpZ2luYWw9IiMwMDAwMDAiIHN0eWxlPSIiIGNsYXNzPSIiPjwvcGF0aD48L2c+PC9zdmc+"

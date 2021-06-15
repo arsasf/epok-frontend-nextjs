@@ -175,6 +175,32 @@
   border: 0;
 }
 
+.modalFooter1 {
+  background-color: #ff5b37;
+  color: white;
+  width: 100px;
+  border: 0;
+}
+
+.modalFooter1:hover {
+  background-color: #ff5b37;
+  color: white;
+  border: 0;
+}
+
+.modalFooter2 {
+  background-color: #6379f4;
+  color: white;
+  width: 100px;
+  border: 0;
+}
+
+.modalFooter2:hover {
+  background-color: #6379f4;
+  color: white;
+  border: 0;
+}
+
 .modalHeader {
   padding: 9px 15px;
   border-bottom: 1px solid #eee;
