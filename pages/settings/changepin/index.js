@@ -92,7 +92,11 @@ export default function Profile(props) {
       userPin: newPin,
     };
     axiosApiIntances
-      .patch(`user/update-pin/${id}`, form)
+      .patch(`user/update-pin/${id}`, form, {
+        headers: {
+          Authorization: `Bearer ${props.userLogin.token || ""}`,
+        },
+      })
       .then((res) => {
         console.log(res);
         setModal(!modal);
@@ -131,7 +135,7 @@ export default function Profile(props) {
           </Modal>
           <Row>
             <Col lg={3} className={styles.left}>
-              <Menu />
+              <Menu profile={true} />
             </Col>
             <Col lg={9} className={styles.right}>
               <div className={`${styles.boxRight} shadow md`}>

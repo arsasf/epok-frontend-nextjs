@@ -4,13 +4,13 @@
   padding-top: 90px;
   font-family: "Nunito Sans", sans-serif;
   padding-bottom: 60px;
+  background-color: #e5e8ed;
 }
 .container {
   margin-top: 50px;
   height: auto;
 }
 .left {
-  background-color: white;
   padding: 0;
 }
 .right {
@@ -34,6 +34,7 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 30px;
+  position: relative;
 }
 .titleSetting {
   font-size: 18px;
@@ -45,7 +46,7 @@
   display: flex;
   width: 100%;
   justify-content: flex-start;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 }
 
@@ -127,4 +128,92 @@
   font-weight: 400;
   color: #7a7886;
   margin-bottom: 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  list-style: none;
+  outline: none;
+}
+.pagination > .active > a {
+  background-color: #6379f4;
+  border-color: #6379f4;
+  color: #fff;
+}
+.pagination > li > a {
+  border: 1px solid #6379f4;
+  padding: 5px 10px;
+  outline: none;
+  cursor: pointer;
+  background-color: white;
+}
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  background-color: #6379f4;
+  border-color: #6379f4;
+  outline: none;
+}
+.pagination > li > a,
+.pagination > li > span {
+  color: #6379f4;
+}
+.pagination > li:first-child > a,
+.pagination > li:first-child > span,
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+  border-radius: unset;
+}
+
+.dropdownSort {
+  margin-left: 30px;
+}
+.titleSort {
+  padding-left: 10px;
+  height: 45px;
+  width: max-content;
+  border-radius: 15px;
+  font-weight: lighter;
+  color: #4e4b66;
+  border: 3px solid #dedede;
+  background-color: white;
+}
+
+.listSort {
+  border-radius: 3px;
+  font-weight: lighter;
+  color: #4e4b66;
+}
+.titleSort:hover,
+.titleSort:active,
+.titleSort:focus,
+.listSort:hover,
+.listSort:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 3px solid #dedede;
+  border-radius: 15px;
+  color: white;
+  font-weight: lighter;
+  background-color: #6379f4;
+}
+
+.titleSort::after {
+  margin-left: 50px;
+}
+
+.menuDropdown {
+  border: 3px solid #dedede;
+  border-radius: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: white;
 }

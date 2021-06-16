@@ -19,6 +19,7 @@ import axiosApiIntances from "../../../utils/axios";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import cookies from "next-cookies";
+import Cookie from "js-cookie";
 import { images } from "../../../next.config";
 
 export async function getServerSideProps(context) {
@@ -54,18 +55,20 @@ export default function Profile(props) {
   const [modal, setModal] = useState(false);
   const [receiver, setReceiver] = useState(props.receiver);
   const [msg, setMsg] = useState(false);
+  const [inputPin, setInputPin] = useState({
+    pin1: "",
+    pin2: "",
+    pin3: "",
+    pin4: "",
+    pin5: "",
+    pin6: "",
+  });
   const toggle = (event) => {
     event.preventDefault();
     setModal(!modal);
   };
 
   console.log(props);
-
-  let today = new Date();
-  let dd = String(today.getDate()).padStart(2, "0");
-  let mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  let yyyy = today.getFullYear();
-  today = mm + "/" + dd + "/" + yyyy;
 
   useEffect(() => {
     console.log("Get Data !");
@@ -85,10 +88,66 @@ export default function Profile(props) {
       });
   };
 
+  const changeText = (event) => {
+    setInputPin({
+      ...inputPin,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handlePin = (event) => {
+    event.preventDefault();
+    const id = props.data.user_id;
+    console.log(id);
+    let pin = [
+      inputPin.pin1,
+      inputPin.pin2,
+      inputPin.pin3,
+      inputPin.pin4,
+      inputPin.pin5,
+      inputPin.pin6,
+    ];
+    const pinCombine = parseInt(pin.join(""));
+    const setData = {
+      transactionReceiverId: props.transfer.receiverId,
+      transactionNote: props.transfer.note,
+      transactionAmount: parseInt(props.transfer.amount),
+      transactionType: "transfer",
+      userPin: pinCombine,
+    };
+    console.log(setData);
+    setModal(false);
+    setInputPin({
+      pin1: "",
+      pin2: "",
+      pin3: "",
+      pin4: "",
+      pin5: "",
+      pin6: "",
+    });
+    axiosApiIntances
+      .post(`transaction/transfer/${id}`, setData)
+      .then((res) => {
+        Cookie.set("error", false, {
+          expires: 1,
+          secure: true,
+        });
+        console.log(res.data);
+        router.push("/transfer/status");
+      })
+      .catch((err) => {
+        Cookie.set("error", true, {
+          expires: 1,
+          secure: true,
+        });
+        console.log(err);
+        router.push("/transfer/status");
+      });
+  };
+
   return (
     <Layout title="Confirmation">
       <Navbar data={user} />
-      {console.log(today)}
       {console.log(receiver)}
       <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
@@ -106,7 +165,7 @@ export default function Profile(props) {
                   <div className={styles.boxForm}>
                     <form
                       className={`card ${styles.form} `}
-                      // onSubmit={handlePin}
+                      onSubmit={handlePin}
                     >
                       <div className={styles.colPin}>
                         <div className="mb-5">
@@ -115,9 +174,9 @@ export default function Profile(props) {
                             className={`${styles.placeholder} form-control`}
                             pattern="[0-9]{1}"
                             maxLength="1"
-                            // name="pin1"
-                            // value={inputPin.pin1}
-                            // onChange={(event) => changeText(event)}
+                            name="pin1"
+                            value={inputPin.pin1}
+                            onChange={(event) => changeText(event)}
                             required
                           />
                         </div>
@@ -127,9 +186,9 @@ export default function Profile(props) {
                             className={`${styles.placeholder} form-control`}
                             pattern="[0-9]{1}"
                             maxLength="1"
-                            // name="pin2"
-                            // value={inputPin.pin2}
-                            // onChange={(event) => changeText(event)}
+                            name="pin2"
+                            value={inputPin.pin2}
+                            onChange={(event) => changeText(event)}
                             required
                           />
                         </div>
@@ -139,9 +198,9 @@ export default function Profile(props) {
                             className={`${styles.placeholder} form-control`}
                             pattern="[0-9]{1}"
                             maxLength="1"
-                            // name="pin3"
-                            // value={inputPin.pin3}
-                            // onChange={(event) => changeText(event)}
+                            name="pin3"
+                            value={inputPin.pin3}
+                            onChange={(event) => changeText(event)}
                             required
                           />
                         </div>
@@ -151,9 +210,9 @@ export default function Profile(props) {
                             className={`${styles.placeholder} form-control`}
                             pattern="[0-9]{1}"
                             maxLength="1"
-                            // name="pin4"
-                            // value={inputPin.pin4}
-                            // onChange={(event) => changeText(event)}
+                            name="pin4"
+                            value={inputPin.pin4}
+                            onChange={(event) => changeText(event)}
                             required
                           />
                         </div>
@@ -163,9 +222,9 @@ export default function Profile(props) {
                             className={`${styles.placeholder} form-control`}
                             pattern="[0-9]{1}"
                             maxLength="1"
-                            // name="pin5"
-                            // value={inputPin.pin5}
-                            // onChange={(event) => changeText(event)}
+                            name="pin5"
+                            value={inputPin.pin5}
+                            onChange={(event) => changeText(event)}
                             required
                           />
                         </div>
@@ -175,9 +234,9 @@ export default function Profile(props) {
                             className={`${styles.placeholder} form-control`}
                             pattern="[0-9]{1}"
                             maxLength="1"
-                            // name="pin6"
-                            // value={inputPin.pin6}
-                            // onChange={(event) => changeText(event)}
+                            name="pin6"
+                            value={inputPin.pin6}
+                            onChange={(event) => changeText(event)}
                             required
                           />
                         </div>
@@ -196,7 +255,7 @@ export default function Profile(props) {
               </ModalBody>
             </Modal>
             <Col lg={3} className={styles.left}>
-              <Menu />
+              <Menu transfer={true} />
             </Col>
             <Col lg={9} className={styles.right}>
               <div className={`${styles.boxRight} shadow md`}>
@@ -205,18 +264,27 @@ export default function Profile(props) {
                     <h4 className={styles.titleSetting}>Transfer To</h4>
                   </div>
                   <div className={styles.listReceiver}>
-                    <div className={`${styles.boxButton} shadow sm`}>
+                    <div className={`${styles.boxButton} `}>
                       <div className={styles.boxImage}>
-                        <Image
-                          src="/img/img-not-found.png"
-                          width="56px"
-                          height="56px"
-                          className={styles.imgProfile}
-                        />
+                        {receiver.user_image === "" ? (
+                          <Image
+                            src="/img/img-not-found.png"
+                            width="56px"
+                            height="56px"
+                            className={styles.imgProfile}
+                          />
+                        ) : (
+                          <img
+                            src={`${images.domains}${receiver.user_image}`}
+                            width="56px"
+                            height="56px"
+                            className={styles.imgProfile}
+                          />
+                        )}
                       </div>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>
-                          {receiver.user_name}
+                          {receiver.user_first_name} {receiver.user_last_name}
                         </h4>
                         <h4 className={styles.textBox2Right4}>
                           {receiver.user_phone_number}
@@ -228,35 +296,37 @@ export default function Profile(props) {
                     <h4 className={styles.titleSetting}>Details</h4>
                   </div>
                   <div className={styles.listReceiver}>
-                    <div className={`${styles.boxButton} shadow sm`}>
+                    <div className={`${styles.boxButton} `}>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>Amount</h4>
                         <h4 className={styles.textBox2Right4}>
-                          Rp{props.transfer.amount}
+                          {props.transfer.amountIDR}
                         </h4>
                       </div>
                     </div>
                   </div>
                   <div className={styles.listReceiver}>
-                    <div className={`${styles.boxButton} shadow sm`}>
+                    <div className={`${styles.boxButton} `}>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>Balance Left</h4>
                         <h4 className={styles.textBox2Right4}>
-                          Rp{props.transfer.balance}
+                          {props.transfer.balance}
                         </h4>
                       </div>
                     </div>
                   </div>
                   <div className={styles.listReceiver}>
-                    <div className={`${styles.boxButton} shadow sm`}>
+                    <div className={`${styles.boxButton} `}>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>Date & Time</h4>
-                        <h4 className={styles.textBox2Right4}>{today}</h4>
+                        <h4 className={styles.textBox2Right4}>
+                          {props.transfer.date}
+                        </h4>
                       </div>
                     </div>
                   </div>
                   <div className={styles.listReceiver}>
-                    <div className={`${styles.boxButton} shadow sm`}>
+                    <div className={`${styles.boxButton} `}>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>Notes</h4>
                         <h4 className={styles.textBox2Right4}>

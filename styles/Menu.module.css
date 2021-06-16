@@ -20,9 +20,32 @@
   border: 0;
   background-color: white;
 }
+
+.rowMenuActive {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  color: white;
+  border: 0;
+  background-color: #6379f4;
+  border-radius: 10px;
+}
 .rowMenu:hover,
 .rowMenu:focus,
 .rowMenu:active {
+  background-color: #6379f4;
+  box-shadow: #6379f4;
+  outline: #6379f4;
+  color: white;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.rowMenuActive:hover,
+.rowMenuActive:focus,
+.rowMenuActive:active {
   background-color: #6379f4;
   box-shadow: #6379f4;
   outline: #6379f4;

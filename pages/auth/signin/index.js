@@ -55,11 +55,11 @@ export default function SignIn() {
           console.log("login");
           setInfo("LOGIN");
           Cookie.set("token", res.data.data.token, {
-            expires: 7,
+            expires: 1,
             secure: true,
           });
           Cookie.set("user", res.data.data.user_id, {
-            expires: 7,
+            expires: 1,
             secure: true,
           });
           return res.data;
@@ -68,11 +68,11 @@ export default function SignIn() {
           setInfo("INPUT PIN");
 
           Cookie.set("token", res.data.data.token, {
-            expires: 7,
+            expires: 1,
             secure: true,
           });
           Cookie.set("user", res.data.data.user_id, {
-            expires: 7,
+            expires: 1,
             secure: true,
           });
           return res.data;

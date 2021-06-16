@@ -203,7 +203,7 @@ export default function Profile(props) {
           </Modal>
           <Row>
             <Col lg={3} className={styles.left}>
-              <Menu />
+              <Menu profile={true} />
             </Col>
             <Col lg={9} className={styles.right}>
               <div className={`${styles.boxRight} shadow md`}>

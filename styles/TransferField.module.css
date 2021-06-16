@@ -4,13 +4,13 @@
   padding-top: 90px;
   font-family: "Nunito Sans", sans-serif;
   padding-bottom: 60px;
+  background-color: #e5e8ed;
 }
 .container {
   margin-top: 50px;
   height: auto;
 }
 .left {
-  background-color: white;
   padding: 0;
 }
 .right {
@@ -108,6 +108,15 @@
   flex-direction: column;
   align-items: center;
   border: 0;
+  position: relative;
+}
+.alert {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+  width: 100%;
 }
 .boxInput1 {
   width: 100%;

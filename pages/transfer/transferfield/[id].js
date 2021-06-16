@@ -2,7 +2,8 @@ import Layout from "../../../components/Layout";
 import Navbar from "../../../components/module/Navbar";
 import Footer from "../../../components/module/Footer";
 import Menu from "../../../components/module/Menu";
-import { Col, Container, Row, Button } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
+import { Alert, Button } from "react-bootstrap";
 import Image from "next/image";
 import styles from "../../../styles/TransferField.module.css";
 import { authPage } from "../../../middleware/authorizationPage";
@@ -28,18 +29,44 @@ export async function getServerSideProps(context) {
     .catch((err) => {
       console.log(err);
     });
+  const resBalance = await axiosApiIntances
+    .get(`/balance/${data.user}`, {
+      headers: {
+        Authorization: `Bearer ${data.token || ""}`,
+      },
+    })
+    .then((res) => {
+      // console.log(res.data);
+      return res.data.data[0];
+    })
+    .catch((err) => {
+      console.log(err.response.status);
+      if (err.response.status === 403) {
+        Cookie.remove("token");
+        Cookie.remove("user");
+        return {};
+      }
+    });
   return {
-    props: { data: result, userLogin: data, idReceiver: id, balance: id },
+    props: {
+      data: result,
+      userLogin: data,
+      idReceiver: id,
+      balance: resBalance,
+    },
   };
 }
 
 export default function Profile(props) {
+  console.log(props);
   const router = useRouter();
   const [user, setUser] = useState(props.data);
   const [receiver, setReceiver] = useState(props.idReceiver);
   const [balance, setBalance] = useState(props.balance);
+  const [show, setShow] = useState(false);
+  const [msg, setMsg] = useState("");
   const [form, setForm] = useState({
-    transactionReceiverId: props.balance,
+    transactionReceiverId: props.idReceiver,
     transactionNote: "",
     transactionAmount: "",
     transactionType: "transfer",
@@ -50,28 +77,19 @@ export default function Profile(props) {
   useEffect(() => {
     console.log("Get Data !");
     getUser();
-    getBalance();
   }, []);
 
   console.log(props.idReceiver);
   const getUser = () => {
     axiosApiIntances
-      .get(`user/${props.idReceiver}`)
+      .get(`user/${props.idReceiver}`, {
+        headers: {
+          Authorization: `Bearer ${props.userLogin.token || ""}`,
+        },
+      })
       .then((res) => {
         // console.log(res.data);
         setReceiver(res.data.data[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getBalance = () => {
-    axiosApiIntances
-      .get(`balance/${props.idReceiver}`)
-      .then((res) => {
-        // console.log(res.data.data[0]);
-        setBalance(res.data.data[0]);
       })
       .catch((err) => {
         console.log(err);
@@ -84,41 +102,83 @@ export default function Profile(props) {
       [event.target.name]: event.target.value,
     });
   };
+  const date = Date.now();
+  const formatDateIn = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+  const DateNow = formatDateIn(date);
+  console.log(DateNow);
 
   const handleTransferField = (balance) => {
-    // console.log("handle running");
-    // console.log(form);
-    const amount = parseInt(form.transactionAmount);
-    let saldo = balance - amount;
-    // console.log(saldo);
-    Cookie.set("receiverId", form.transactionReceiverId, {
-      expires: 1,
-      secure: true,
+    if (form.transactionAmount > balance) {
+      setShow(true);
+      setMsg("Your balance not enough to transfer!");
+      console.log("saldo tidak cukup");
+    } else if (form.transactionAmount === "") {
+      setShow(true);
+      setMsg("Please input balance !");
+    } else {
+      const amount = parseInt(form.transactionAmount);
+      let saldo = formatter.format(balance - amount);
+      console.log(saldo);
+      Cookie.set("receiverId", form.transactionReceiverId, {
+        expires: 1,
+        secure: true,
+      });
+      Cookie.set("amountIDR", formatter.format(form.transactionAmount), {
+        expires: 1,
+        secure: true,
+      });
+      Cookie.set("amount", form.transactionAmount, {
+        expires: 1,
+        secure: true,
+      });
+      Cookie.set("note", form.transactionNote, {
+        expires: 1,
+        secure: true,
+      });
+      Cookie.set("balance", saldo, {
+        expires: 1,
+        secure: true,
+      });
+      Cookie.set("date", DateNow, {
+        expires: 1,
+        secure: true,
+      });
+      router.push("/transfer/confirmation");
+    }
+  };
+
+  let formatter = new Intl.NumberFormat("in-ID", {
+    style: "currency",
+    currency: "IDR",
+  });
+  const IDR = formatter.format(balance.balance);
+  console.log(IDR);
+
+  const handleClose = () => {
+    setShow(false);
+    setForm({
+      ...form,
+      transactionAmount: "",
     });
-    Cookie.set("amount", form.transactionAmount, {
-      expires: 1,
-      secure: true,
-    });
-    Cookie.set("note", form.transactionNote, {
-      expires: 1,
-      secure: true,
-    });
-    Cookie.set("balance", saldo, {
-      expires: 1,
-      secure: true,
-    });
-    router.push("/transfer/confirmation");
   };
 
   return (
     <Layout title="Transfer Field">
       <Navbar data={user} />
-      {/* {console.log(balance)} */}
       <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
           <Row>
             <Col lg={3} className={styles.left}>
-              <Menu />
+              <Menu transfer={true} />
             </Col>
             <Col lg={9} className={styles.right}>
               <div className={`${styles.boxRight} shadow md`}>
@@ -127,7 +187,7 @@ export default function Profile(props) {
                     <h4 className={styles.titleSetting}>Transfer Money</h4>
                   </div>
                   <div className={styles.listReceiver}>
-                    <div className={`${styles.boxButton} shadow sm`}>
+                    <div className={`${styles.boxButton}`}>
                       <div className={styles.boxImage}>
                         {receiver.user_image === "" ? (
                           <Image
@@ -147,7 +207,7 @@ export default function Profile(props) {
                       </div>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>
-                          {receiver.user_name}
+                          {receiver.user_first_name} {receiver.user_last_name}
                         </h4>
                         <h4 className={styles.textBox2Right4}>
                           {receiver.user_phone_number}
@@ -164,13 +224,31 @@ export default function Profile(props) {
                   <div className={styles.boxTransferField}>
                     <div className={styles.boxForm}>
                       <form className={`card ${styles.form} `}>
+                        {show ? (
+                          <Alert className={styles.alert} variant="warning">
+                            <Alert.Heading>Warning!</Alert.Heading>
+                            <p>{msg}</p>
+                            <Button
+                              variant="warning"
+                              onClick={() => handleClose()}
+                            >
+                              Close
+                            </Button>
+                          </Alert>
+                        ) : (
+                          ""
+                        )}
+
                         <div className={styles.boxInput1}>
                           <div className="input-group">
                             <input
-                              type="text"
+                              type="number"
+                              step="1"
+                              pattern="\d+"
                               placeholder="00.00"
                               className={`${styles.placeholder} form-control`}
                               id="exampleInputPassword1"
+                              pattern="[0-9]"
                               name="transactionAmount"
                               value={form.transactionAmount}
                               onChange={(event) => changeText(event)}
@@ -178,9 +256,7 @@ export default function Profile(props) {
                             />
                           </div>
                         </div>
-                        <h4 className={styles.textMoney}>
-                          Rp{balance.balance} Available
-                        </h4>
+                        <h4 className={styles.textMoney}>{IDR} Available</h4>
                         <div className={styles.boxNote}>
                           <div className="input-group">
                             <div className={styles.iconForm}>

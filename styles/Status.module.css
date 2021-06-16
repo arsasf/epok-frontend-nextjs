@@ -4,13 +4,13 @@
   padding-top: 90px;
   font-family: "Nunito Sans", sans-serif;
   padding-bottom: 60px;
+  background-color: #e5e8ed;
 }
 .container {
   margin-top: 50px;
   height: auto;
 }
 .left {
-  background-color: white;
   padding: 0;
 }
 .right {
@@ -103,6 +103,7 @@
   font-weight: 400;
   color: #7a7886;
   margin-bottom: 0;
+  text-transform: capitalize;
 }
 .boxTransferField {
   width: 100%;
