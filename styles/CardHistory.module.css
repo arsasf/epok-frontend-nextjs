@@ -168,11 +168,14 @@
   font-size: 16px;
   font-weight: 700;
   color: #4d4b57;
+  text-transform: capitalize;
 }
 .textBox2Right4 {
   font-size: 14px;
   font-weight: 400;
   color: #7a7886;
+  text-transform: capitalize;
+  font-style: italic;
 }
 
 .textBox2Right5 {
@@ -184,8 +187,10 @@
 }
 
 .textBox2Right6 {
+  width: 50%;
   font-size: 16px;
   font-weight: 700;
+  text-align: right;
   color: #ff5b37;
 }
 

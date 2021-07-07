@@ -19,6 +19,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/router";
 import CardTransaction from "components/module/cardHistory";
+import { Bar } from "react-chartjs-2";
 
 export async function getServerSideProps(context) {
   let data = await authPage(context);
@@ -154,6 +155,43 @@ export default function Home(props) {
       });
   };
 
+  //* ==================== Chart
+  const data = {
+    labels: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"],
+    datasets: [
+      {
+        label: "Transfer",
+        data: [20, 40, 50, 60, 0, 0, 0],
+        backgroundColor: ["#6379f4"],
+        borderColor: ["#6379f4"],
+        borderWidth: 1,
+        borderRadius: 5,
+        barThickness: 15,
+      },
+      {
+        label: "Top Up",
+        data: [0, 0, 50, 70, 0, 30, 0],
+        backgroundColor: ["#ff5b37"],
+        borderColor: ["#ff5b37"],
+        borderWidth: 1,
+        borderRadius: 5,
+        barThickness: 15,
+      },
+    ],
+  };
+
+  const options = {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+    },
+  };
+
   return (
     <Layout title="Home">
       <Navbar data={user} />
@@ -282,13 +320,15 @@ export default function Home(props) {
                   </div>
                 </div>
                 <div className={styles.box2}>
-                  <div className={`${styles.box2Left} shadow sm`}>box left</div>
-                  <div className={`${styles.box2Right} shadow sm`}>
+                  <div className={`${styles.box2Left} `}>
+                    <Bar data={data} options={options} />
+                  </div>
+                  <div className={`${styles.box2Right} `}>
                     <div className={styles.boxTransaction}>
                       <h4 className={styles.textBox2Right1}>
                         Transaction History
                       </h4>
-                      <h4 className={styles.textBox2Right2}>See all</h4>
+                      <h4 className={styles.textBox2Right2}>Refresh</h4>
                     </div>
                     {transaction.map((item, index) => {
                       return (
