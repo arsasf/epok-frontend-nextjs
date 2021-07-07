@@ -1,4 +1,4 @@
-<h1 align='center'>Next JS - E-pok </h1>
+<h1 align='center'>Next JS - E-Pok </h1>
   <p align="center">
     <a href="https://epok-frontend-nextjs.vercel.app/">View Demo</a>
     ·
@@ -11,8 +11,8 @@
 
 ## About The Project
 
-What is Epok ? E-pok is a modern digital wallet. epok provides convenience in transactions.
-Epok ? Easy transactions anywhere and can be used anytime !
+What is E-Pok ? E-Pok is a modern digital wallet. E-Pok provides convenience in transactions.
+E-Pok ? Easy transactions anywhere and can be used anytime !
 
 ## Built With
 
@@ -33,9 +33,9 @@ Epok ? Easy transactions anywhere and can be used anytime !
 4. Add next.config.js file at root folder project
 
 ```sh
-APP_NAME: Coffee Mate
-API_BASE_URL: http://localhost:3005/backend5/api/v1/
-API_IMG_URL: http://localhost:3005/backend5/api/
+APP_NAME: E-Pok
+API_BASE_URL: http://localhost:3004/backend4/api/v1/
+API_IMG_URL: http://localhost:3004/backend4/api/
 ```
 
 5. Type `npm run dev`
