@@ -7,7 +7,7 @@
     <a href="https://github.com/arsasf/epok-frontend-nextjs/pulls">Request Feature</a>
   </p>
 
-![Image Banner](public/banner.jpg)
+![Image Banner](public/img-banner.png)
 
 ## About The Project
 
