@@ -27,7 +27,7 @@ E-Pok ? Easy transactions anywhere and can be used anytime !
 
 ## Getting Started
 
-1. Download this Project or you can type `git clone https://github.com/arsasf/coffee-mate-fronted.git`
+1. Download this Project or you can type `git clone https://github.com/arsasf/epok-frontend-nextjs.git`
 2. Open app's directory in CMD or Terminal
 3. Type `npm install` or `yarn install`
 4. Add next.config.js file at root folder project
