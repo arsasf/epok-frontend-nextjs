@@ -4,11 +4,12 @@
   padding-top: 90px;
   font-family: "Nunito Sans", sans-serif;
   padding-bottom: 0px;
-  background-color: white;
+  background-color: whitesmoke;
 }
 .container {
   margin-top: 50px;
   height: auto;
+  padding-bottom: 50px;
 }
 .left {
   padding: 0;
@@ -19,9 +20,8 @@
 }
 .boxRight {
   width: 100%;
-  height: 100%;
+  height: 678px;
   display: flex;
-  align-items: flex-start;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -98,15 +98,37 @@
   display: flex;
   justify-content: space-between;
 }
+.boxIncome {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
 
+.boxOutCome {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+.boxInfoIncomeOutcome {
+  width: 100%;
+  padding: 0;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.textIncome {
+  margin-left: 10px;
+  margin-bottom: 0;
+}
 .box2Left {
   width: 51%;
-  padding: 30px;
-  height: 81%;
+  padding: 4em 30px 4em 30px;
+  height: 100%;
   background-color: white;
   border-radius: 20px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -117,7 +139,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   width: 45%;
-  height: 81%;
+  height: 100%;
   background-color: white;
   padding: 30px;
   overflow-y: scroll;

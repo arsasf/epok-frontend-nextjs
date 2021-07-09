@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Cookie from "js-cookie";
-import axiosApiIntances from "../utils/axios";
-import Layout from "../components/Layout";
-import Navbar from "../components/module/Navbar";
-import Footer from "../components/module/Footer";
-import Menu from "../components/module/Menu";
-import styles from "../styles/Home.module.css";
-import { authPage } from "../middleware/authorizationPage";
+import axiosApiIntances from "utils/axios";
+import Layout from "components/Layout";
+import Navbar from "components/module/Navbar";
+import Footer from "components/module/Footer";
+import Menu from "components/module/Menu";
+import styles from "styles/Home.module.css";
+import { authPage } from "middleware/authorizationPage";
 import {
   Col,
   Container,
@@ -20,19 +20,19 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import CardTransaction from "components/module/cardHistory";
 import { Bar } from "react-chartjs-2";
+import { ArrowSquareUp, ArrowSquareDown } from "phosphor-react";
 
 export async function getServerSideProps(context) {
   let data = await authPage(context);
-  console.log(data);
+  const authorization = {
+    Authorization: `Bearer ${data.token || ""}`,
+  };
 
   const result = await axiosApiIntances
     .get(`/user/${data.user}`, {
-      headers: {
-        Authorization: `Bearer ${data.token || ""}`,
-      },
+      headers: authorization,
     })
     .then((res) => {
-      // console.log(res.data);
       return res.data.data[0];
     })
     .catch((err) => {
@@ -40,19 +40,15 @@ export async function getServerSideProps(context) {
       if (err.response.status === 403) {
         Cookie.remove("token");
         Cookie.remove("user");
-        // useRouter().push("/signin");
         return {};
       }
     });
 
   const resBalance = await axiosApiIntances
     .get(`/balance/${data.user}`, {
-      headers: {
-        Authorization: `Bearer ${data.token || ""}`,
-      },
+      headers: authorization,
     })
     .then((res) => {
-      // console.log(res.data);
       return res.data.data[0];
     })
     .catch((err) => {
@@ -66,12 +62,9 @@ export async function getServerSideProps(context) {
 
   const resTransaction = await axiosApiIntances
     .get(`/transaction/all/${data.user}?limit=4&filter=month(now())`, {
-      headers: {
-        Authorization: `Bearer ${data.token || ""}`,
-      },
+      headers: authorization,
     })
     .then((res) => {
-      // console.log(res.data);
       return res.data.data;
     })
     .catch((err) => {
@@ -82,29 +75,80 @@ export async function getServerSideProps(context) {
         return {};
       }
     });
+
+  const dataDebitPerDay = await axiosApiIntances
+    .get("transaction/all/transaction/transaction-debit", {
+      headers: authorization,
+    })
+    .then((res) => {
+      return res.data.data;
+    })
+    .catch(() => {
+      return [];
+    });
+
+  const dataKreditPerDay = await axiosApiIntances
+    .get("transaction/all/transaction/transaction-kredit", {
+      headers: authorization,
+    })
+    .then((res) => {
+      return res.data.data;
+    })
+    .catch(() => {
+      return [];
+    });
+
+  const sumDataDebit = await axiosApiIntances
+    .get("transaction/all/transaction/sum-debit", {
+      headers: authorization,
+    })
+    .then((res) => {
+      return res.data.data;
+    })
+    .catch(() => {
+      return [];
+    });
+
+  const sumDataKredit = await axiosApiIntances
+    .get("transaction/all/transaction/sum-kredit", {
+      headers: authorization,
+    })
+    .then((res) => {
+      return res.data.data;
+    })
+    .catch(() => {
+      return [];
+    });
   return {
     props: {
       data: result,
       userLogin: data,
       balance: resBalance,
       transaction: resTransaction,
+      transactionDebit: dataDebitPerDay,
+      transactionKredit: dataKreditPerDay,
+      sumDataDebit,
+      sumDataKredit,
     },
   };
 }
 
 export default function Home(props) {
   console.log(props);
-  const [user, setUser] = useState(props.data);
-  const [transaction, setTransaction] = useState(props.transaction);
+  const [user] = useState(props.data);
+  const [transaction] = useState(props.transaction);
   const router = useRouter();
   const [modal, setModal] = useState(false);
-  const [show, setShow] = useState(false);
+  const [show] = useState(false);
+  const { transactionDebit } = props;
+  const { transactionKredit } = props;
+  const { sumDataDebit } = props;
+  const { sumDataKredit } = props;
   let formatter = new Intl.NumberFormat("in-ID", {
     style: "currency",
     currency: "IDR",
   });
   const IDR = formatter.format(props.balance.balance);
-  console.log(IDR);
 
   const changeText = (event) => {
     setForm({
@@ -135,8 +179,7 @@ export default function Home(props) {
       .post(`transaction/transfer/${id}`, setData)
       .then((res) => {
         setModal(false);
-        console.log(res.data);
-        router.push("/");
+        router.push(res.data.data.redirectUrl);
         setForm({
           ...form,
           transactionNote: "",
@@ -151,17 +194,26 @@ export default function Home(props) {
           transactionNote: "",
           transactionAmount: "",
         });
-        router.push("/");
+        // router.push("/");
       });
   };
 
   //* ==================== Chart
+
   const data = {
     labels: ["Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"],
     datasets: [
       {
-        label: "Transfer",
-        data: [20, 40, 50, 60, 0, 0, 0],
+        label: "Debit",
+        data: [
+          transactionDebit[0][0].total,
+          transactionDebit[1][0].total,
+          transactionDebit[2][0].total,
+          transactionDebit[3][0].total,
+          transactionDebit[4][0].total,
+          transactionDebit[5][0].total,
+          transactionDebit[6][0].total,
+        ],
         backgroundColor: ["#6379f4"],
         borderColor: ["#6379f4"],
         borderWidth: 1,
@@ -169,8 +221,16 @@ export default function Home(props) {
         barThickness: 15,
       },
       {
-        label: "Top Up",
-        data: [0, 0, 50, 70, 0, 30, 0],
+        label: "Kredit",
+        data: [
+          transactionKredit[0][0].total,
+          transactionKredit[1][0].total,
+          transactionKredit[2][0].total,
+          transactionKredit[3][0].total,
+          transactionKredit[4][0].total,
+          transactionKredit[5][0].total,
+          transactionKredit[6][0].total,
+        ],
         backgroundColor: ["#ff5b37"],
         borderColor: ["#ff5b37"],
         borderWidth: 1,
@@ -192,9 +252,14 @@ export default function Home(props) {
     },
   };
 
+  const handleRefresh = () => {
+    window.location.href = "/";
+  };
+
   return (
     <Layout title="Home">
       <Navbar data={user} />
+      {console.log(sumDataDebit, sumDataKredit)}
       <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
           <Modal isOpen={modal} className={styles.modal}>
@@ -284,7 +349,6 @@ export default function Home(props) {
               </div>
             </ModalBody>
           </Modal>
-
           <Row>
             <Col lg={3} className={styles.left}>
               <Menu nav="home" />
@@ -321,6 +385,32 @@ export default function Home(props) {
                 </div>
                 <div className={styles.box2}>
                   <div className={`${styles.box2Left} `}>
+                    <Row className={styles.boxInfoIncomeOutcome}>
+                      <Col
+                        lg={6}
+                        md={12}
+                        xs={12}
+                        className={styles.colBoxInfoIncomeOutcome}
+                      >
+                        <div className={styles.boxIncome}>
+                          <ArrowSquareUp color="#6379f4" size={40} />
+                          <h6 className={styles.textIncome}>Income</h6>
+                        </div>
+                        <h5>{formatter.format(sumDataDebit[0].total)}</h5>
+                      </Col>
+                      <Col
+                        lg={6}
+                        md={12}
+                        xs={12}
+                        className={styles.colBoxInfoIncomeOutcome}
+                      >
+                        <div className={styles.boxOutCome}>
+                          <ArrowSquareDown color="#ff5b37" size={40} />
+                          <h6 className={styles.textIncome}>Expense</h6>
+                        </div>
+                        <h5>{formatter.format(sumDataKredit[0].total)}</h5>
+                      </Col>
+                    </Row>
                     <Bar data={data} options={options} />
                   </div>
                   <div className={`${styles.box2Right} `}>
@@ -328,7 +418,12 @@ export default function Home(props) {
                       <h4 className={styles.textBox2Right1}>
                         Transaction History
                       </h4>
-                      <h4 className={styles.textBox2Right2}>Refresh</h4>
+                      <h4
+                        className={styles.textBox2Right2}
+                        onClick={() => handleRefresh()}
+                      >
+                        Refresh
+                      </h4>
                     </div>
                     {transaction.map((item, index) => {
                       return (

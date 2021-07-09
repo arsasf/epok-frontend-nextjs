@@ -1,21 +1,25 @@
-import Layout from "../../../components/Layout";
-import Navbar from "../../../components/module/Navbar";
-import Footer from "../../../components/module/Footer";
-import Menu from "../../../components/module/Menu";
-import { Col, Container, Row } from "reactstrap";
-import Image from "next/image";
-import styles from "../../../styles/SearchReceiver.module.css";
-import { authPage } from "../../../middleware/authorizationPage";
-import axiosApiIntances from "../../../utils/axios";
-import { useRouter } from "next/router";
+// * ========================= Import =================================
 import React, { useState, useEffect } from "react";
-import { Dropdown } from "react-bootstrap";
-import CardUser from "../../../components/module/card";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import ReactPaginate from "react-paginate";
+import { Dropdown } from "react-bootstrap";
+import { Col, Container, Row } from "reactstrap";
+import styles from "styles/SearchReceiver.module.css";
+import axiosApiIntances from "utils/axios";
+import { authPage } from "middleware/authorizationPage";
+import Layout from "components/Layout";
+import Navbar from "components/module/Navbar";
+import Footer from "components/module/Footer";
+import Menu from "components/module/Menu";
+import CardUser from "components/module/card";
+// * ========================= End Import =============================
 
+// ?? ========================== SSR ==================================
 export async function getServerSideProps(context) {
   const data = await authPage(context);
 
+  // * ============================ API USER LOGIN ====================
   const result = await axiosApiIntances
     .get(`/user/${data.user}`, {
       headers: {
@@ -23,21 +27,24 @@ export async function getServerSideProps(context) {
       },
     })
     .then((res) => {
-      // console.log(res.data);
       return res.data.data[0];
     })
     .catch((err) => {
-      console.log(err);
+      if (err) {
+        return {};
+      }
     });
+  // * ================================= End ==========================
 
   return {
     props: { data: result, userLogin: data },
   };
 }
+// ?? ============================= End ===============================
 
 export default function Profile(props) {
   const router = useRouter();
-  const [user, setUser] = useState(props.data);
+  const [user] = useState(props.data);
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
@@ -45,15 +52,22 @@ export default function Profile(props) {
   const [title, setTitle] = useState("Sort");
   const [pagination, setPagination] = useState({});
 
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  //* ====================== CHANGE SEARCH AND SORT ===================
   const changeText = (event) => {
     setSearch(event.target.value);
   };
 
-  useEffect(() => {
-    console.log("Get Data !");
-    getUser();
-  }, []);
+  const handleSortClick = (event, param) => {
+    setSort(event);
+    setTitle(param);
+  };
+  // * ================================= End ==========================
 
+  //  * ========================= API GET ALL USER ======================
   const getUser = () => {
     axiosApiIntances
       .get(`/user?page=1&limit=3&sort=&search=`, {
@@ -63,7 +77,6 @@ export default function Profile(props) {
       })
       .then((res) => {
         router.push(`/transfer/searchreceiver`);
-        console.log(res.data);
         setSearch("");
         setUsers(res.data.data);
         setPage(res.data.pagination.page);
@@ -71,17 +84,16 @@ export default function Profile(props) {
         return res.data;
       })
       .catch((err) => {
-        console.log(err);
-        return [];
+        if (err) {
+          return [];
+        }
       });
   };
+  // * ================================= End ==========================
 
-  const handleSearch = (event, limit, page) => {
-    // const id = user.user_id;
-    console.log(page);
+  //  * ================== API GET ALL USER SEARCH ====================
+  const handleSearch = (event, page) => {
     event.preventDefault();
-    console.log("runnging");
-    console.log(search);
     axiosApiIntances
       .get(`/user?page=${page}&limit=3&sort=${sort}&search=${search}`, {
         headers: {
@@ -90,7 +102,6 @@ export default function Profile(props) {
       })
       .then((res) => {
         router.push(`/transfer/searchreceiver?search=${search}&sort=${sort}`);
-        console.log(res.data);
         setSearch("");
         setUsers(res.data.data);
         setPage(res.data.pagination.page);
@@ -98,13 +109,15 @@ export default function Profile(props) {
         return res.data;
       })
       .catch((err) => {
-        console.log(err);
-        return [];
+        if (err) {
+          return [];
+        }
       });
   };
+
+  //  * ===================== API GET ALL USER SORT ===================
   const handlePageClick = (event) => {
     const selectedPage = event.selected + 1;
-    console.log(selectedPage);
     setPage(selectedPage);
     axiosApiIntances
       .get(`/user?page=${selectedPage}&limit=3&sort=${sort}&search=${search}`, {
@@ -116,7 +129,6 @@ export default function Profile(props) {
         router.push(
           `/transfer/searchreceiver?search=${search}&sort=${sort}&page=${selectedPage}&limit=1`
         );
-        console.log(res.data);
         setSearch("");
         setUsers(res.data.data);
         setPage(res.data.pagination.page);
@@ -124,19 +136,16 @@ export default function Profile(props) {
         return res.data;
       })
       .catch((err) => {
-        console.log(err);
-        return [];
+        if (err) {
+          return [];
+        }
       });
   };
-  const handleSortClick = (event, param) => {
-    setSort(event);
-    setTitle(param);
-  };
+  // * ================================= End ==========================
 
   return (
     <Layout title="Search Receiver">
       <Navbar data={user} />
-      {console.log(pagination)}
       <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
           <Row>
@@ -152,9 +161,7 @@ export default function Profile(props) {
                   <div className={styles.boxName}>
                     <form
                       className={`card ${styles.form} `}
-                      onSubmit={() =>
-                        handleSearch(event, pagination.limit, page)
-                      }
+                      onSubmit={() => handleSearch(event, page)}
                     >
                       <div className={styles.boxForm}>
                         <div className="input-group">
@@ -181,7 +188,6 @@ export default function Profile(props) {
                       <Dropdown.Toggle
                         variant="#fff"
                         title="sort"
-                        id="dropdown-basic"
                         className={styles.titleSort}
                       >
                         {title}
@@ -190,40 +196,18 @@ export default function Profile(props) {
                         <Dropdown.Item
                           className={styles.listSort}
                           onClick={() =>
-                            handleSortClick("user_first_name ASC", "Name A-Z")
+                            handleSortClick("user_first_name ASC", "Name A-z")
                           }
                         >
-                          Name A-Z
+                          Name A-z
                         </Dropdown.Item>
                         <Dropdown.Item
                           className={styles.listSort}
                           onClick={() =>
-                            handleSortClick("user_first_name DESC", "Name Z-A")
+                            handleSortClick("user_first_name DESC", "Name Z-a")
                           }
                         >
-                          Name Z-A
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          className={styles.listSort}
-                          onClick={() =>
-                            handleSortClick(
-                              "user_phone_number ASC",
-                              "Phone Number A-Z"
-                            )
-                          }
-                        >
-                          Phone Number A-Z
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          className={styles.listSort}
-                          onClick={() =>
-                            handleSortClick(
-                              "user_phone_number DESC",
-                              "Phone Number Z-A"
-                            )
-                          }
-                        >
-                          Phone Number Z-A
+                          Name Z-a
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>

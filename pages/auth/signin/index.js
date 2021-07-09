@@ -66,7 +66,6 @@ export default function SignIn() {
         } else {
           console.log("pin");
           setInfo("INPUT PIN");
-
           Cookie.set("token", res.data.data.token, {
             expires: 1,
             secure: true,

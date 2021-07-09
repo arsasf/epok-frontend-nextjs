@@ -2,16 +2,24 @@ import { useRouter } from "next/router";
 import Cookie from "js-cookie";
 import styles from "../../styles/Menu.module.css";
 import Image from "next/image";
-import { Button, Container } from "reactstrap";
+import { Button } from "reactstrap";
+import axiosApiIntances from "utils/axios";
+import cookies from "next-cookies";
 
-export default function Menu(props) {
+export default function Menu(props, context) {
   const router = useRouter();
-
+  const allCookies = cookies(context);
   const handleLogout = (event) => {
     event.preventDefault();
-    Cookie.remove("token");
-    Cookie.remove("user");
-    router.push("/signin");
+    axiosApiIntances
+      .patch(`/auth/logout/${allCookies.user}`)
+      .then((res) => {
+        console.log(res);
+        Cookie.remove("token");
+        Cookie.remove("user");
+        router.push("/signin");
+      })
+      .catch((err) => console.error(err));
   };
 
   const handleProfile = (event) => {
@@ -31,7 +39,7 @@ export default function Menu(props) {
 
   return (
     <>
-      <div className={`${styles.boxMenuLeft} shadow md`}>
+      <div className={styles.boxMenuLeft}>
         <div className={styles.listMenuTop}>
           {props.nav ? (
             <Button className={styles.rowMenuActive} onClick={handleDashboard}>

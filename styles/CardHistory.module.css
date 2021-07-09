@@ -160,6 +160,7 @@
 }
 .imgProfile {
   border-radius: 10px;
+  object-fit: cover;
 }
 .textProfile {
   margin-left: 10px;

@@ -1,18 +1,12 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import Cookie from "js-cookie";
 import Image from "next/image";
-import styles from "../../styles/Navbar.module.css";
+import styles from "styles/Navbar.module.css";
 import { Container, Col, Row } from "reactstrap";
-import { images } from "../../next.config";
+import { images } from "next.config";
 
 export default function Navbar(props) {
-  const router = useRouter();
-  // console.log(props);
-
   return (
     <>
-      <Container fluid className={`${styles.fullArea} shadow md`}>
+      <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
           <Row className={styles.rowContainer}>
             <Col className={styles.colLeft}>

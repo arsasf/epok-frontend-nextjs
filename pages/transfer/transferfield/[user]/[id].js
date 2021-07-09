@@ -1,107 +1,113 @@
-import Layout from "../../../components/Layout";
-import Navbar from "../../../components/module/Navbar";
-import Footer from "../../../components/module/Footer";
-import Menu from "../../../components/module/Menu";
+// * ========================= Import ================================
+import Layout from "components/Layout";
+import Navbar from "components/module/Navbar";
+import Footer from "components/module/Footer";
+import Menu from "components/module/Menu";
 import { Col, Container, Row } from "reactstrap";
 import { Alert, Button } from "react-bootstrap";
 import Image from "next/image";
-import styles from "../../../styles/TransferField.module.css";
-import { authPage } from "../../../middleware/authorizationPage";
-import axiosApiIntances from "../../../utils/axios";
+import styles from "styles/TransferField.module.css";
+import axiosApiIntances from "utils/axios";
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Cookie from "js-cookie";
-import { images } from "../../../next.config";
+import { images } from "next.config";
+// * ========================= End Import =============================
 
-export async function getServerSideProps(context) {
-  const data = await authPage(context);
-  let id = context.query.id;
-  const result = await axiosApiIntances
-    .get(`/user/${data.user}`, {
-      headers: {
-        Authorization: `Bearer ${data.token || ""}`,
-      },
-    })
+// ?? =========================== STATIC PATHS ========================
+export async function getStaticPaths() {
+  // * ================== API ALL DATA USER ===========================
+  const users = await axiosApiIntances
+    .get("user/all-user")
     .then((res) => {
-      // console.log(res.data);
-      return res.data.data[0];
+      return res.data.data;
     })
     .catch((err) => {
-      console.log(err);
+      if (err) {
+        return [];
+      }
     });
-  const resBalance = await axiosApiIntances
-    .get(`/balance/${data.user}`, {
-      headers: {
-        Authorization: `Bearer ${data.token || ""}`,
-      },
-    })
+  // * ============================ End ===============================
+
+  // * ============================ Paths ============================
+  const idLogin = users.filter((item) => item.user_login === "1");
+  const paths = users.map((item) => ({
+    params: {
+      user: idLogin[0].user_id.toString(),
+      id: `${item.user_id.toString()}`,
+    },
+  }));
+  // * ============================ End ===============================
+
+  return {
+    paths,
+    fallback: false,
+  };
+}
+// ?? ============================ End ================================
+
+// ?? =========================== STATIC DATA =========================
+export async function getStaticProps(context) {
+  // * ========================= API USER LOGIN =======================
+  const userLogin = await axiosApiIntances
+    .get(`user/${context.params.user}`)
     .then((res) => {
-      // console.log(res.data);
       return res.data.data[0];
     })
     .catch((err) => {
-      console.log(err.response.status);
-      if (err.response.status === 403) {
-        Cookie.remove("token");
-        Cookie.remove("user");
+      if (err) {
         return {};
       }
     });
+  // * ============================ End ===============================
+
+  // * ==================== API BALANCE USER LOGIN ====================
+  const userBalance = await axiosApiIntances
+    .get(`/balance/${context.params.user}`)
+    .then((res) => {
+      return res.data.data[0];
+    })
+    .catch((err) => {
+      if (err) {
+        return {};
+      }
+    });
+  // * ============================ End ===============================
+
+  // *============================ API RECEIVER =======================
+  const receiver = await axiosApiIntances
+    .get(`user/${context.params.id}`)
+    .then((res) => {
+      return res.data.data[0];
+    })
+    .catch((err) => {
+      if (err) {
+        return {};
+      }
+    });
+  // * ============================ End ===============================
+
   return {
-    props: {
-      data: result,
-      userLogin: data,
-      idReceiver: id,
-      balance: resBalance,
-    },
+    props: { userLogin, userBalance, receiver },
   };
 }
+// ?? ============================ End ================================
 
 export default function Profile(props) {
-  console.log(props);
   const router = useRouter();
-  const [user, setUser] = useState(props.data);
-  const [receiver, setReceiver] = useState(props.idReceiver);
-  const [balance, setBalance] = useState(props.balance);
+  const [user] = useState(props.userLogin);
+  const [balance] = useState(props.userBalance);
   const [show, setShow] = useState(false);
   const [msg, setMsg] = useState("");
   const [form, setForm] = useState({
-    transactionReceiverId: props.idReceiver,
+    transactionReceiverId: props.receiver.user_id,
     transactionNote: "",
     transactionAmount: "",
     transactionType: "transfer",
     userPin: "",
   });
-  // console.log(props);
 
-  useEffect(() => {
-    console.log("Get Data !");
-    getUser();
-  }, []);
-
-  console.log(props.idReceiver);
-  const getUser = () => {
-    axiosApiIntances
-      .get(`user/${props.idReceiver}`, {
-        headers: {
-          Authorization: `Bearer ${props.userLogin.token || ""}`,
-        },
-      })
-      .then((res) => {
-        // console.log(res.data);
-        setReceiver(res.data.data[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const changeText = (event) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
-  };
+  // * =========================== Change Date ========================
   const date = Date.now();
   const formatDateIn = (dateString) => {
     const options = {
@@ -114,20 +120,44 @@ export default function Profile(props) {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
   const DateNow = formatDateIn(date);
-  console.log(DateNow);
+  // * ============================ End ===============================
 
+  // * =========================== Change Currency ====================
+  let formatter = new Intl.NumberFormat("in-ID", {
+    style: "currency",
+    currency: "IDR",
+  });
+  const IDR = formatter.format(balance.balance);
+  // * ============================ End ===============================
+
+  // * =========================== Change Form ========================
+  const changeText = (event) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    setForm({
+      ...form,
+      transactionAmount: "",
+    });
+  };
+  // * ============================ End ===============================
+
+  // * =================== SET DATA BALANCE ===========================
   const handleTransferField = (balance) => {
     if (form.transactionAmount > balance) {
       setShow(true);
       setMsg("Your balance not enough to transfer!");
-      console.log("saldo tidak cukup");
     } else if (form.transactionAmount === "") {
       setShow(true);
       setMsg("Please input balance !");
     } else {
       const amount = parseInt(form.transactionAmount);
       let saldo = formatter.format(balance - amount);
-      console.log(saldo);
       Cookie.set("receiverId", form.transactionReceiverId, {
         expires: 1,
         secure: true,
@@ -155,21 +185,7 @@ export default function Profile(props) {
       router.push("/transfer/confirmation");
     }
   };
-
-  let formatter = new Intl.NumberFormat("in-ID", {
-    style: "currency",
-    currency: "IDR",
-  });
-  const IDR = formatter.format(balance.balance);
-  console.log(IDR);
-
-  const handleClose = () => {
-    setShow(false);
-    setForm({
-      ...form,
-      transactionAmount: "",
-    });
-  };
+  // * ============================ End ===============================
 
   return (
     <Layout title="Transfer Field">
@@ -189,7 +205,7 @@ export default function Profile(props) {
                   <div className={styles.listReceiver}>
                     <div className={`${styles.boxButton}`}>
                       <div className={styles.boxImage}>
-                        {receiver.user_image === "" ? (
+                        {props.receiver.user_image === "" ? (
                           <Image
                             src="/img/img-not-found.png"
                             width="56px"
@@ -198,7 +214,7 @@ export default function Profile(props) {
                           />
                         ) : (
                           <img
-                            src={`${images.domains}${receiver.user_image}`}
+                            src={`${images.domains}${props.receiver.user_image}`}
                             width="56px"
                             height="56px"
                             className={styles.imgProfile}
@@ -207,10 +223,11 @@ export default function Profile(props) {
                       </div>
                       <div className={styles.textProfile}>
                         <h4 className={styles.textBox2Right3}>
-                          {receiver.user_first_name} {receiver.user_last_name}
+                          {props.receiver.user_first_name}{" "}
+                          {props.receiver.user_last_name}
                         </h4>
                         <h4 className={styles.textBox2Right4}>
-                          {receiver.user_phone_number}
+                          {props.receiver.user_phone_number}
                         </h4>
                       </div>
                     </div>
@@ -243,11 +260,10 @@ export default function Profile(props) {
                           <div className="input-group">
                             <input
                               type="number"
-                              step="1"
+                              step="1000"
                               pattern="\d+"
                               placeholder="00.00"
                               className={`${styles.placeholder} form-control`}
-                              id="exampleInputPassword1"
                               pattern="[0-9]"
                               name="transactionAmount"
                               value={form.transactionAmount}
@@ -270,7 +286,6 @@ export default function Profile(props) {
                               type="text"
                               placeholder="Add some notes"
                               className={`${styles.placeholder1} form-control`}
-                              // id="exampleInputPassword1"
                               name="transactionNote"
                               value={form.transactionNote}
                               onChange={(event) => changeText(event)}

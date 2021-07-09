@@ -1,11 +1,9 @@
-import { useRouter } from "next/router";
-import Cookie from "js-cookie";
 import styles from "styles/CardHistory.module.css";
 import Image from "next/image";
 import { images } from "../../next.config";
 import { authPage } from "../../middleware/authorizationPage";
 import axiosApiIntances from "../../utils/axios";
-import React, { useState } from "react";
+import React from "react";
 
 export async function getServerSideProps(context) {
   const data = await authPage(context);
@@ -17,7 +15,6 @@ export async function getServerSideProps(context) {
       },
     })
     .then((res) => {
-      // console.log(res.data);
       return res.data.data[0];
     })
     .catch((err) => {
@@ -30,7 +27,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Footer(props) {
-  console.log(props);
   let formatter = new Intl.NumberFormat("in-ID", {
     style: "currency",
     currency: "IDR",
@@ -39,10 +35,16 @@ export default function Footer(props) {
   const kredit = formatter.format(props.data.transaction_kredit);
   return (
     <>
-      {/* <div className={styles.boxTransaction2}> */}
       <div className={styles.boxProfile}>
         <div>
-          {props.data.user_image === "" ? (
+          {props.data.transaction_type === "topup" ? (
+            <img
+              src={`${images.domains}${props.userLogin.user_image}`}
+              width="56px"
+              height="56px"
+              className={styles.imgProfile}
+            />
+          ) : props.data.user_image === "" ? (
             <Image
               src="/img/img-not-found.png"
               width="56px"

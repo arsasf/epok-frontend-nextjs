@@ -1,22 +1,25 @@
+// * ========================= Import =================================
 import React, { useState, useEffect } from "react";
-import Layout from "../../../components/Layout";
-import Navbar from "../../../components/module/Navbar";
-import Footer from "../../../components/module/Footer";
-import Menu from "../../../components/module/Menu";
-import { Col, Container, Row } from "reactstrap";
-import Image from "next/image";
-import styles from "../../../styles/Status.module.css";
-import { authPage } from "../../../middleware/authorizationPage";
-import { useRouter } from "next/router";
-import axiosApiIntances from "../../../utils/axios";
 import cookies from "next-cookies";
-import Cookie from "js-cookie";
-import { images } from "../../../next.config";
+import Image from "next/image";
+import router from "next/router";
+import { images } from "next.config";
+import axiosApiIntances from "utils/axios";
+import { authPage } from "middleware/authorizationPage";
+import { Col, Container, Row } from "reactstrap";
+import styles from "styles/Status.module.css";
+import Layout from "components/Layout";
+import Navbar from "components/module/Navbar";
+import Footer from "components/module/Footer";
+import Menu from "components/module/Menu";
+// * ========================= End Import =============================
 
+// ?? ========================== SSR ==================================
 export async function getServerSideProps(context) {
   const data = await authPage(context);
   const allCookies = cookies(context);
-  console.log(allCookies);
+
+  // * ============================ API USER LOGIN ====================
   const result = await axiosApiIntances
     .get(`/user/${data.user}`, {
       headers: {
@@ -24,12 +27,15 @@ export async function getServerSideProps(context) {
       },
     })
     .then((res) => {
-      // console.log(res.data);
       return res.data.data[0];
     })
     .catch((err) => {
-      console.log(err);
+      if (err) {
+        return {};
+      }
     });
+  // * ================================= End ==========================
+
   return {
     props: {
       data: result,
@@ -39,27 +45,31 @@ export async function getServerSideProps(context) {
     },
   };
 }
+// ?? ============================= End ===============================
 
 export default function Profile(props) {
-  console.log(props);
-  const [user, setUser] = useState(props.data);
+  const [user] = useState(props.data);
   const [receiver, setReceiver] = useState(props.receiver);
 
   useEffect(() => {
     console.log("Get Data !");
     getUser();
   }, []);
+
+  // * =============== API GET DATA RECEIVER ==========================
   const getUser = () => {
     axiosApiIntances
       .get(`user/${props.transfer.receiverId}`)
       .then((res) => {
-        // console.log(res.data);
         setReceiver(res.data.data[0]);
       })
       .catch((err) => {
-        console.log(err);
+        if (err) {
+          return {};
+        }
       });
   };
+  // * ================================= End ==========================
 
   return (
     <Layout title="Status Transfer">
@@ -208,6 +218,7 @@ export default function Profile(props) {
                         <button
                           type="submit"
                           className={`${styles.buttonForm} btn`}
+                          onClick={() => router.push("/")}
                         >
                           Back to Home
                         </button>
@@ -217,6 +228,9 @@ export default function Profile(props) {
                         <button
                           type="submit"
                           className={`${styles.buttonForm} btn`}
+                          onClick={() =>
+                            router.push("/transfer/searchreceiver")
+                          }
                         >
                           Try Again
                         </button>

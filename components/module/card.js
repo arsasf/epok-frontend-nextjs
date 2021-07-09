@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
-import Cookie from "js-cookie";
 import styles from "../../styles/SearchReceiver.module.css";
 import Image from "next/image";
 import { images } from "../../next.config";
 import { authPage } from "../../middleware/authorizationPage";
 import axiosApiIntances from "../../utils/axios";
-import React, { useState } from "react";
+import React from "react";
 
 export async function getServerSideProps(context) {
   const data = await authPage(context);
@@ -17,7 +16,6 @@ export async function getServerSideProps(context) {
       },
     })
     .then((res) => {
-      // console.log(res.data);
       return res.data.data[0];
     })
     .catch((err) => {
@@ -33,20 +31,19 @@ export default function Footer(props) {
   console.log(props);
   const router = useRouter();
   const handleTransferField = (id) => {
-    router.push(`/transfer/transferfield/${id}`);
+    router.push(`/transfer/transferfield/${props.userLogin.user_id}/${id}`);
   };
 
   return (
     <>
-      {props.data.user_id === props.userLogin.user_id ? (
-        console.log("true")
-      ) : (
+      {props.data.user_id !== props.userLogin.user_id && (
         <div
           className={`${styles.boxButton}`}
           onClick={() => handleTransferField(props.data.user_id)}
         >
           <div className={styles.boxImage}>
-            {props.data.user_image === "" ? (
+            {props.data.user_id !== props.userLogin.user_id &&
+            props.data.user_image === "" ? (
               <Image
                 src="/img/img-not-found.png"
                 width="56px"
@@ -64,10 +61,14 @@ export default function Footer(props) {
           </div>
           <div className={styles.textProfile}>
             <h4 className={styles.textBox2Right3}>
-              {props.data.user_first_name} {props.data.user_last_name}
+              {props.data.user_id !== props.userLogin.user_id &&
+                props.data.user_first_name}{" "}
+              {props.data.user_id !== props.userLogin.user_id &&
+                props.data.user_last_name}
             </h4>
             <h4 className={styles.textBox2Right4}>
-              {props.data.user_phone_number}
+              {props.data.user_id !== props.userLogin.user_id &&
+                props.data.user_phone_number}
             </h4>
           </div>
         </div>
