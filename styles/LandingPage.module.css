@@ -140,8 +140,14 @@
   padding: 5em;
 }
 
+.boxContent3 {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .boxAboutApp {
-  background-color: aqua;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -155,12 +161,42 @@
   font-size: 18px;
 }
 
+.boxLogo {
+  background-color: white;
+  border-radius: 10px;
+  width: 20em;
+  padding: 3em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon {
+  padding: 8px;
+  background-color: rgba(71, 58, 209, 0.137);
+  border-radius: 100%;
+  margin-bottom: 30px;
+}
+
+.textLogoContent3,
+.textLogoContent5 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.textInfoLogo {
+  font-size: 14px;
+  text-align: center;
+}
+
 .content4 {
+  padding-top: 2em;
   background-color: rgba(71, 58, 209, 0.137);
   padding-left: 5em;
   padding-right: 5em;
   height: auto;
-  padding-bottom: 3em;
+  padding-bottom: 0;
 }
 .boxLayerContent4 {
   width: min-content;
@@ -198,6 +234,63 @@
 .textInfoFeature {
   font-size: 12px;
 }
+
+.boxTestimoni {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.boxProfile {
+  background-color: white;
+  border-radius: 10px;
+  width: 80%;
+  padding: 3em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer {
+  background-color: #6379f4;
+  padding: 5em;
+}
+.textLogoFooter {
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 700;
+  color: white;
+}
+
+.textInfoFooter {
+  font-size: 16px;
+  color: white;
+  font-weight: lighter;
+  line-height: 1.5em;
+  margin-bottom: 30px;
+}
+
+.header {
+  color: white;
+}
+
+.contact,
+.boxContact {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.textInfoContact {
+  font-size: 16px;
+  color: white;
+  font-weight: lighter;
+  line-height: 1.5em;
+  margin-bottom: 30px;
+  margin-right: 20px;
+}
 @media (max-width: 900px) {
   .navbar {
     padding-left: 3em;
@@ -212,8 +305,7 @@
     width: 6em;
   }
 
-  .content1,
-  .content4 {
+  .content1 {
     padding-left: 3em;
     padding-right: 3em;
   }
@@ -231,11 +323,49 @@
     font-size: 35px;
   }
 
-  .content2 {
+  .content2,
+  .content3,
+  .content4,
+  .footer {
     padding: 3em;
+  }
+
+  .contact {
+    width: 100%;
   }
 
   .logoCompany {
     width: 3em;
+  }
+
+  .boxContent3 {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .boxAboutApp {
+    align-items: flex-start;
+  }
+
+  .textInfoAboutApp {
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+  }
+  .textInfoLogo {
+    font-size: 12px;
+  }
+  .boxLogo {
+    width: 100%;
+    padding: 1em;
+  }
+
+  .boxProfile {
+    width: 70%;
+    padding: 2em;
+  }
+
+  .textLogoContent5 {
+    text-align: center;
   }
 }
