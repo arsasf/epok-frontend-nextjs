@@ -7,7 +7,6 @@ import { unauthPage } from "middleware/authorizationPage";
 import axiosApiIntances from "utils/axios";
 import Image from "next/image";
 import Link from "next/link";
-
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 export async function getServerSideProps(context) {
@@ -119,7 +118,7 @@ export default function SignIn() {
             <h1 className={styles.textLeft2}>
               E-Pok is an application that focussing in banking needs for all
               users in the world. Always updated and always following world
-              trends. 5000+ users registered in Zwallet everyday with worldwide
+              trends. 5000+ users registered in E-pok everyday with worldwide
               users coverage.
             </h1>
           </div>
@@ -129,7 +128,7 @@ export default function SignIn() {
               With 30.000+ Users
             </h1>
             <h1 className={styles.textRight2}>
-              Transfering money is eassier than ever, you can access Zwallet
+              Transfering money is eassier than ever, you can access E-pok
               wherever you are. Desktop, laptop, mobile phone? we cover all of
               that for you!
             </h1>
@@ -143,8 +142,6 @@ export default function SignIn() {
                     type="email"
                     placeholder="Enter your e-mail"
                     className={`${styles.placeholder} form-control`}
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
                     name="userEmail"
                     value={form.userEmail}
                     onChange={(event) => changeText(event)}
@@ -161,7 +158,6 @@ export default function SignIn() {
                     type="password"
                     placeholder="Enter your password"
                     className={`${styles.placeholder} form-control`}
-                    id="exampleInputPassword1"
                     name="userPassword"
                     value={form.userPassword}
                     onChange={(event) => changeText(event)}
@@ -169,10 +165,7 @@ export default function SignIn() {
                   />
                 </div>
                 <Link href="#">
-                  <div
-                    id="emailHelp"
-                    className={`${styles.textForgot} form-text`}
-                  >
+                  <div className={`${styles.textForgot} form-text`}>
                     Forgot Password ?
                   </div>
                 </Link>

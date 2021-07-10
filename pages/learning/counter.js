@@ -4,7 +4,7 @@ import {
   increaseCounter,
   decreaseCounter,
   resetCounter,
-} from "../redux/actions/counter";
+} from "redux/actions/counter";
 import { initializeStore } from "redux/store";
 
 export async function getStaticProps() {
