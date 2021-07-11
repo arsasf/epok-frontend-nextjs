@@ -27,7 +27,7 @@ export default function SignIn() {
       router.push("/signin");
       setModal(!modal);
     } else if (info === "LOGIN") {
-      router.push("/");
+      router.push("/home");
       setModal(!modal);
     } else if (info === "INPUT PIN") {
       router.push("/pin");

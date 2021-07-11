@@ -82,7 +82,7 @@
     flex-direction: row;
     width: 100%;
     height: max-content;
-    padding: 20px 100px 20px 100px;
+    padding: 1em;
     justify-content: space-between;
     align-items: center;
     position: fixed;
@@ -97,11 +97,14 @@
   .listMenuTop {
     flex-direction: row;
     justify-content: space-between;
-    width: 80%;
+    width: 100%;
     height: 100%;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    align-items: center;
   }
   .listMenuBottom {
-    height: 100%;
+    height: 100% !important;
     width: 20%;
     flex-direction: row;
   }

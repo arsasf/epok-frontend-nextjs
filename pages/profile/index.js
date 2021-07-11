@@ -55,7 +55,7 @@ export default function Profile(props) {
       router.push("/profile");
       setShow(false);
     } else {
-      router.push("/");
+      router.push("/home");
       setShow(false);
     }
   };

@@ -22,7 +22,7 @@ export default function Login() {
     };
     Cookie.set("token", "TestingToken", { expires: 7, secure: true });
     Cookie.set("user", data.user_id, { expires: 7, secure: true });
-    router.push("/");
+    router.push("/home");
   };
 
   return (

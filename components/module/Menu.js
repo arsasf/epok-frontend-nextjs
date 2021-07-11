@@ -29,7 +29,7 @@ export default function Menu(props, context) {
 
   const handleDashboard = (event) => {
     event.preventDefault();
-    router.push("/");
+    router.push("/home");
   };
 
   const handleTransfer = (event) => {

@@ -37,7 +37,7 @@ export default function Pin(props) {
       router.push("/signin");
       setModal(!modal);
     } else {
-      router.push("/");
+      router.push("/home");
       setModal(!modal);
     }
   };

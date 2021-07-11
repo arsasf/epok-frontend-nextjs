@@ -218,7 +218,7 @@ export default function Profile(props) {
                         <button
                           type="submit"
                           className={`${styles.buttonForm} btn`}
-                          onClick={() => router.push("/")}
+                          onClick={() => router.push("/home")}
                         >
                           Back to Home
                         </button>

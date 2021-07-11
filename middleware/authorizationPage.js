@@ -6,7 +6,7 @@ export function unauthPage(context) {
     if (allCookies.token) {
       return context.res
         .writeHead(302, {
-          Location: "/",
+          Location: "/home",
         })
         .end();
     }

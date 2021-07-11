@@ -61,7 +61,7 @@ export async function getServerSideProps(context) {
     });
 
   const resTransaction = await axiosApiIntances
-    .get(`/transaction/all/${data.user}?limit=4&filter=month(now())`, {
+    .get(`/transaction/all/${data.user}`, {
       headers: authorization,
     })
     .then((res) => {
@@ -134,7 +134,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home(props) {
-  console.log(props);
+  // console.log(props);
   const [user] = useState(props.data);
   const [transaction] = useState(props.transaction);
   const router = useRouter();
@@ -173,7 +173,6 @@ export default function Home(props) {
       transactionType: "topup",
       userPin: props.data.user_pin,
     };
-    console.log(setData);
     const id = props.data.user_id;
     axiosApiIntances
       .post(`transaction/transfer/${id}`, setData)
@@ -194,10 +193,10 @@ export default function Home(props) {
           transactionNote: "",
           transactionAmount: "",
         });
-        // router.push("/");
+        // router.push("/home");
       });
   };
-
+  console.log(transactionDebit, transactionKredit);
   //* ==================== Chart
 
   const data = {
@@ -259,7 +258,6 @@ export default function Home(props) {
   return (
     <Layout title="Home">
       <Navbar data={user} />
-      {console.log(sumDataDebit, sumDataKredit)}
       <Container fluid className={styles.fullArea}>
         <Container className={styles.container}>
           <Modal isOpen={modal} className={styles.modal}>
@@ -353,7 +351,7 @@ export default function Home(props) {
             <Col lg={3} className={styles.left}>
               <Menu nav="home" />
             </Col>
-            <Col lg={9} className={styles.right}>
+            <Col lg={9} md={12} xs={12} className={styles.right}>
               <div className={styles.boxRight}>
                 <div className={styles.box1}>
                   <div className={styles.textBox1Left}>

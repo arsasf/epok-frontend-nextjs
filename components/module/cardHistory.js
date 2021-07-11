@@ -51,9 +51,16 @@ export default function Footer(props) {
               height="56px"
               className={styles.imgProfile}
             />
-          ) : (
+          ) : props.data.transaction_debit ? (
             <img
               src={`${images.domains}${props.data.user_image}`}
+              width="56px"
+              height="56px"
+              className={styles.imgProfile}
+            />
+          ) : (
+            <img
+              src={`${images.domains}${props.userLogin.user_image}`}
               width="56px"
               height="56px"
               className={styles.imgProfile}
@@ -61,7 +68,7 @@ export default function Footer(props) {
           )}
         </div>
         <div className={styles.textProfile}>
-          {props.data.transaction_kredit ? (
+          {props.data.transaction_debit ? (
             <h4 className={styles.textBox2Right3}>
               {props.data.user_first_name} {props.data.user_last_name}
             </h4>
@@ -74,10 +81,10 @@ export default function Footer(props) {
             {props.data.transaction_type}
           </h4>
         </div>
-        {props.data.transaction_kredit ? (
-          <h4 className={styles.textBox2Right6}> - {kredit}</h4>
-        ) : (
+        {props.data.transaction_debit ? (
           <h4 className={styles.textBox2Right5}> + {debit}</h4>
+        ) : (
+          <h4 className={styles.textBox2Right6}> - {kredit}</h4>
         )}
       </div>
     </>

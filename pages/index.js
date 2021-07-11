@@ -9,6 +9,11 @@ import {
   ArrowRight,
 } from "phosphor-react";
 import { useRouter } from "next/router";
+import { unauthPage } from "middleware/authorizationPage";
+export async function getServerSideProps(context) {
+  await unauthPage(context);
+  return { props: {} };
+}
 
 export default function LandingPage() {
   const router = useRouter();
